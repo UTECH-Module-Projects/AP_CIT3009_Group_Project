@@ -16,6 +16,13 @@ public class Testings {
     JButton submit;
 
     public Testings() {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException |
+                 IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         initializeComponents();
         addComponentsToFrame();
         setWindowProperties();
@@ -23,7 +30,7 @@ public class Testings {
 
     private void initializeComponents() {
         frame = new JFrame();
-        frame.setLayout(new MigLayout());
+        frame.setLayout(new MigLayout("wrap, insets 20, fillx, debug", "[][]", "[][][]"));
 
         fNameLBL = new JLabel("First Name");
         lNameLBL = new JLabel("Last Name");
@@ -35,11 +42,13 @@ public class Testings {
     }
 
     private void addComponentsToFrame() {
+        String lblConst = "pushx, growx, width 200";
+
         frame.add(fNameLBL);
-        frame.add(fNameTXT, "grow, span 5, wrap");
+        frame.add(fNameTXT, lblConst);
         frame.add(lNameLBL);
-        frame.add(lNameTXT, "grow, span 5, wrap");
-        frame.add(submit);
+        frame.add(lNameTXT, lblConst);
+        frame.add(submit, "span, al center");
     }
 
     private void setWindowProperties() {
