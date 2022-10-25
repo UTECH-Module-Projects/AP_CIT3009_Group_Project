@@ -1,11 +1,29 @@
 package com.application.models;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.Type;
+
+//Question 17
+@Entity (name = "Person")
+@Table (name = "Person")
 public class Person {
+    @Id
+    @Column (name = "idNum")
     private String idNum;
+
+    @Column (name = "name")
     private String name;
+
+    @Column (name = "dob")
     private Date dob;
+
+    @Column (name = "address")
     private String address;
+
+    @Column (name = "name")
     private String phoneNum;
+
+    @Column (name = "email")
     private String email;
 
     public Person() {

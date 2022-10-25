@@ -1,6 +1,12 @@
 package com.application.models;
 
+
+import jakarta.persistence.*;
+
+@Entity(name = "Customer")
+@SecondaryTable(name = "Customer", pkJoinColumns = @PrimaryKeyJoinColumn (name = "personID"))
 public class Customer extends Person {
+    @Column(table = "Person", name = "personID", nullable = false)
     private Date dom;
     private Date dome;
 
