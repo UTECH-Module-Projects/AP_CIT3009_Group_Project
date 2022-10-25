@@ -1,12 +1,7 @@
 package com.application.view;
 
-import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
-
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-import java.awt.*;
 
 public class Testings {
 
