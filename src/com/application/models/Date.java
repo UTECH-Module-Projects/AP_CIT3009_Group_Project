@@ -19,6 +19,14 @@ public class Date {
         this.year = year;
     }
 
+    public Date(Date date) {
+        if (date != null) {
+            this.day = date.day;
+            this.month = date.month;
+            this.year = date.year;
+        }
+    }
+
     public int getDay() {
         return day;
     }
@@ -41,6 +49,10 @@ public class Date {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public String toSQLDate() {
+        return this.year + "-" + this.month + "-" + this.day;
     }
 
     @Override

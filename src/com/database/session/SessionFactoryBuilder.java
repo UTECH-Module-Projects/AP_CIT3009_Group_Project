@@ -1,25 +1,29 @@
 package com.database.session;
 
+import com.application.models.Customer;
+import com.application.models.DateConverter;
+import com.application.models.Person;
+import com.application.models.Table;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-//Question
 public class SessionFactoryBuilder {
     private static SessionFactory sessionFactory = null;
 
-    //Question 9
     public static SessionFactory getSessionFactory() throws HibernateException {
 
-        //Question 10
-        if (sessionFactory == null) {
-//            sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(Student.class).buildSessionFactory();
-        }
+        if (sessionFactory == null)
+            sessionFactory = new Configuration().configure("hibernate.cfg.xml")
+                    .addAnnotatedClass(Customer.class)
+                    .addAnnotatedClass(Person.class)
+                    .addAnnotatedClass(Table.class)
+                    .addAnnotatedClass(DateConverter.class)
+                    .buildSessionFactory();
 
         return sessionFactory;
     }
 
-    //Question 9
     public static void closeSessionFactory() {
         //Question 11
         if (sessionFactory != null)

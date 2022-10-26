@@ -1,30 +1,27 @@
 package com.application.models;
-
 import jakarta.persistence.*;
-import org.hibernate.annotations.Type;
 
 //Question 17
-@Entity (name = "Person")
-@Table (name = "Person")
-public class Person {
+@MappedSuperclass
+public abstract class Person extends Table {
     @Id
     @Column (name = "idNum")
-    private String idNum;
+    protected String idNum;
 
     @Column (name = "name")
-    private String name;
+    protected String name;
 
     @Column (name = "dob")
-    private Date dob;
+    protected Date dob;
 
     @Column (name = "address")
-    private String address;
+    protected String address;
 
-    @Column (name = "name")
-    private String phoneNum;
+    @Column (name = "phoneNum")
+    protected String phoneNum;
 
     @Column (name = "email")
-    private String email;
+    protected String email;
 
     public Person() {
         this.idNum = "";
@@ -42,6 +39,23 @@ public class Person {
         this.address = address;
         this.phoneNum = phoneNum;
         this.email = email;
+    }
+
+    public Person(String name, Date dob, String address, String phoneNum, String email) {
+        this.name = name;
+        this.dob = dob;
+        this.address = address;
+        this.phoneNum = phoneNum;
+        this.email = email;
+    }
+
+    public Person(Person person) {
+        this.idNum = person.idNum;
+        this.name = person.name;
+        this.dob = person.dob;
+        this.address = person.address;
+        this.phoneNum = person.phoneNum;
+        this.email = person.email;
     }
 
     public String getIdNum() {
