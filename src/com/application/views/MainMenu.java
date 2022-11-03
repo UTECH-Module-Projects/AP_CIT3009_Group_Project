@@ -1,3 +1,5 @@
+package com.application.views;
+
 import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -63,10 +65,10 @@ public class MainMenu extends JFrame implements ActionListener{
 		stockButton = new Button("Inventory");
 		
 		try {
-			custIcon = ImageIO.read(new File("C:\\Users\\jazmi\\eclipse-workspace\\FlatLafMenu\\src\\images\\customer_icon.png"));
-			empIcon = ImageIO.read(new File("C:\\Users\\jazmi\\eclipse-workspace\\FlatLafMenu\\src\\images\\white-person-icon.png"));
-			stockIcon = ImageIO.read(new File("C:\\Users\\jazmi\\eclipse-workspace\\FlatLafMenu\\src\\images\\stock-icon.png"));
-			reportIcon = ImageIO.read(new File("C:\\Users\\jazmi\\eclipse-workspace\\FlatLafMenu\\src\\images\\report-icon-sign.png"));
+			custIcon = ImageIO.read(new File("./src/com/application/views/images/customer_icon.png"));
+			empIcon = ImageIO.read(new File("./src/com/application/views/images/white-person-icon.png"));
+			stockIcon = ImageIO.read(new File("./src/com/application/views/images/stock-icon.png"));
+			reportIcon = ImageIO.read(new File("./src/com/application/views/images/report-icon-sign.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
