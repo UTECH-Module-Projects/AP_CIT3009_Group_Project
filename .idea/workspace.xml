@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ff1274bb-3f1d-4444-a36a-b909539cbaae" name="Changes" comment="Updated Employee, Department, and Product Database Connection">
+      <change beforePath="$PROJECT_DIR$/src/com/application/views/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/application/views/MainMenu.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="DBConn" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2FirstActivated">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="true" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="true" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="true" />
+      </map>
+    </option>
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.haulmont.jpb.jpaInspector" value="false" />
+        <entry key="com.haulmont.jpb.jpaPalette" value="false" />
+        <entry key="com.haulmont.jpb.jpaStructure" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2G3sNZCwj3Cbfb3UGwLHsy9gO28" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Downloaded.Files.Path.Enabled": "false",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "import_schema_mapping": "<schema-mapping>\n  <databases>\n    <list>\n      <schema-mapping-item>\n        <source-data-source-id>b22f0894-ba44-470f-a1c0-0f743044d109</source-data-source-id>\n        <source-path>schema/&quot;sql10528107&quot;</source-path>\n        <target-data-source-id>e7c37581-f0c0-4f61-999d-8b2eff78c671</target-data-source-id>\n        <target-path>schema/&quot;freedb_APProjectDB&quot;</target-path>\n      </schema-mapping-item>\n    </list>\n  </databases>\n</schema-mapping>",
+    "jdk.selected.JAVA_MODULE": "openjdk-17",
+    "last_opened_file_path": "G:/My Drive/UTECH/Semester 5/Advanced Programming/APRetailProject/FlatLaf.jar/flatlaf-2.6.jar",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15136719",
+    "project.structure.side.proportion": "0.26091954",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="G:\My Drive\UTECH\Semester 5\Advanced Programming\APRetailProject\src" />
+      <recent name="G:\My Drive\UTECH\Semester 5\Advanced Programming\APRetailProject\Layouts" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.application.models" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="MainMenu" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.application.views.MainMenu" />
+      <module name="APRetailProject" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.application.views.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="APRetailProject" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="APRetailProject" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.MainMenu" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\rusha\AppData\Roaming\Subversion</configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ff1274bb-3f1d-4444-a36a-b909539cbaae" name="Changes" comment="" />
+      <created>1665628568201</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1665628568201</updated>
+      <workItem from="1665628569594" duration="1188000" />
+      <workItem from="1665629891638" duration="8540000" />
+      <workItem from="1665682710393" duration="35000" />
+      <workItem from="1666199834297" duration="434000" />
+      <workItem from="1666233936551" duration="3473000" />
+      <workItem from="1666271464826" duration="5318000" />
+      <workItem from="1666307062458" duration="889000" />
+      <workItem from="1666311979017" duration="3101000" />
+      <workItem from="1666629033408" duration="169000" />
+      <workItem from="1666721950092" duration="6864000" />
+      <workItem from="1666730292096" duration="10104000" />
+      <workItem from="1666794638199" duration="10145000" />
+      <workItem from="1666819313071" duration="85000" />
+      <workItem from="1666822649635" duration="99000" />
+      <workItem from="1666836204841" duration="3542000" />
+      <workItem from="1666895960854" duration="11621000" />
+      <workItem from="1667054633026" duration="3156000" />
+      <workItem from="1667075383358" duration="60000" />
+      <workItem from="1667355531121" duration="3657000" />
+      <workItem from="1667405104751" duration="2306000" />
+      <workItem from="1667416689686" duration="4928000" />
+      <workItem from="1667495969763" duration="2109000" />
+      <workItem from="1667499231162" duration="30000" />
+      <workItem from="1667499312642" duration="48000" />
+      <workItem from="1667499386856" duration="138000" />
+      <workItem from="1667499551313" duration="3210000" />
+    </task>
+    <task id="LOCAL-00001" summary="fourth commit">
+      <created>1665638524677</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1665638524677</updated>
+    </task>
+    <task id="LOCAL-00002" summary="fifth commit">
+      <created>1666240377721</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1666240377721</updated>
+    </task>
+    <task id="LOCAL-00003" summary="sixth commit">
+      <created>1666307298745</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1666307298745</updated>
+    </task>
+    <task id="LOCAL-00004" summary="override main branch">
+      <created>1666723980626</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1666723980626</updated>
+    </task>
+    <task id="LOCAL-00005" summary="eight commit">
+      <created>1666735999043</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1666735999043</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Customer Database Connection Update">
+      <created>1666805295413</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1666805295413</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Updated Employee, Department, and Product Database Connection">
+      <created>1667499040991</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1667499040991</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Updated Employee, Department, and Product Database Connection">
+      <created>1667500040140</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1667500040140</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="DBGUIConn" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="DBConn" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="HEAD" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fourth commit" />
+    <MESSAGE value="fifth commit" />
+    <MESSAGE value="sixth commit" />
+    <MESSAGE value="override main branch" />
+    <MESSAGE value="eight commit" />
+    <MESSAGE value="Customer Database Connection Update" />
+    <MESSAGE value="Updated Employee, Department, and Product Database Connection" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated Employee, Department, and Product Database Connection" />
+  </component>
+</project>
