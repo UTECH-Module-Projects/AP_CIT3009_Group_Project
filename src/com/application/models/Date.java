@@ -57,6 +57,6 @@ public class Date {
 
     @Override
     public String toString() {
-        return Months[this.month] + " " + this.day + ", " + this.year;
+        return Months[this.month-1] + " " + this.day + ", " + this.year;
     }
 }

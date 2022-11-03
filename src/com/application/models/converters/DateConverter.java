@@ -1,5 +1,6 @@
-package com.application.models;
+package com.application.models.converters;
 
+import com.application.models.Date;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

@@ -1,5 +1,8 @@
-package com.application.models;
+package com.application.models.tables;
 
+import com.application.models.Date;
+import com.application.models.Person;
+import com.application.models.Utilities;
 import com.database.session.SessionFactoryBuilder;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
@@ -13,7 +16,7 @@ import org.hibernate.Transaction;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity (name = "Customer")
+@Entity
 @Table (name = "Customer")
 public class Customer extends Person {
     @Column (name = "dom")
@@ -31,6 +34,12 @@ public class Customer extends Person {
         super(idNum, name, dob, address, phoneNum, email);
         this.dom = dom;
         this.dome = dome;
+    }
+
+    public Customer(String idNum, String name, Date dob, String address, String phoneNum, String email) {
+        super(idNum, name, dob, address, phoneNum, email);
+        this.dom = null;
+        this.dome = null;
     }
 
     public Customer(String name, Date dob, String address, String phoneNum, String email, Date dom, Date dome) {
@@ -91,12 +100,9 @@ public class Customer extends Person {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
             Root<Customer> r = cq.from(Customer.class);
-            CriteriaQuery<Customer> cust = cq.select(r).where(cb.equal(r.get("idNum"), id));
-
-            TypedQuery<Customer> custQuery = session.createQuery(cust);
-            Customer customer = custQuery.getSingleResult();
+            Customer record = session.createQuery(cq.select(r).where(cb.equal(r.get("idNum"), id))).getSingleResult();
             transaction.commit();
-            return customer;
+            return record;
         } catch (HibernateException e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
@@ -110,15 +116,10 @@ public class Customer extends Person {
 
         try (Session session = SessionFactoryBuilder.getSessionFactory().getCurrentSession()) {
             transaction = session.beginTransaction();
-            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<Customer> criteriaQuery = criteriaBuilder.createQuery(Customer.class);
-            Root<Customer> root = criteriaQuery.from(Customer.class);
-            CriteriaQuery<Customer> allCust = criteriaQuery.select(root);
-
-            TypedQuery<Customer> allCustQuery = session.createQuery(allCust);
-            List<Customer> custList = allCustQuery.getResultList();
+            CriteriaQuery<Customer> cq = session.getCriteriaBuilder().createQuery(Customer.class);
+            List<Customer> list = session.createQuery(cq.select(cq.from(Customer.class))).getResultList();
             transaction.commit();
-            return custList;
+            return list;
         } catch (HibernateException e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();

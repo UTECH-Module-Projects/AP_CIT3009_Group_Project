@@ -1,9 +1,16 @@
 package com.application.models;
 
 import com.database.session.SessionFactoryBuilder;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import java.util.Collections;
+import java.util.List;
 
 public abstract class Table {
     public void create() {

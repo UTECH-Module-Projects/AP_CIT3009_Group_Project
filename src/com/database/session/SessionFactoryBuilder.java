@@ -1,9 +1,11 @@
 package com.database.session;
 
-import com.application.models.Customer;
-import com.application.models.DateConverter;
+import com.application.models.tables.Department;
+import com.application.models.tables.Customer;
+import com.application.models.converters.DateConverter;
 import com.application.models.Person;
 import com.application.models.Table;
+import com.application.models.tables.Employee;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -16,9 +18,11 @@ public class SessionFactoryBuilder {
         if (sessionFactory == null)
             sessionFactory = new Configuration().configure("hibernate.cfg.xml")
                     .addAnnotatedClass(Customer.class)
+                    .addAnnotatedClass(Employee.class)
                     .addAnnotatedClass(Person.class)
                     .addAnnotatedClass(Table.class)
                     .addAnnotatedClass(DateConverter.class)
+                    .addAnnotatedClass(Department.class)
                     .buildSessionFactory();
 
         return sessionFactory;

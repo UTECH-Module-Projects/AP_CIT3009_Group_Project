@@ -1,4 +1,6 @@
-package com.application.models;
+package com.application.models.tables;
+
+import com.application.models.Date;
 
 import java.util.ArrayList;
 

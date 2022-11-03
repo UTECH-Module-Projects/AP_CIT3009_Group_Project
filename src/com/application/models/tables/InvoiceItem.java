@@ -1,4 +1,4 @@
-package com.application.models;
+package com.application.models.tables;
 
 public class InvoiceItem {
     private String prodID;

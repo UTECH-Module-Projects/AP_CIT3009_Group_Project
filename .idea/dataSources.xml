@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="sql10528107@sql10.freesqldatabase.com" uuid="b22f0894-ba44-470f-a1c0-0f743044d109">
+    <data-source source="LOCAL" name="freedb_APProjectDB@sql.freedb.tech" uuid="e7c37581-f0c0-4f61-999d-8b2eff78c671">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://sql10.freesqldatabase.com:3306/sql10528107</jdbc-url>
+      <jdbc-url>jdbc:mysql://sql.freedb.tech:3306/freedb_APProjectDB</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="hibernate.cfg.xml/Hibernate" uuid="fb3ebdb9-9a02-4990-be1b-c744cca0e3eb">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate
+
+G:/My Drive/UTECH/Semester 5/Advanced Programming/APRetailProject/src/hibernate.cfg.xml</remarks>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://sql.freedb.tech:3306/freedb_APProjectDB</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
