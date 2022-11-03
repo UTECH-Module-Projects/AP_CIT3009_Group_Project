@@ -50,17 +50,6 @@ public class Product extends com.application.models.Table {
         this.price = price;
     }
 
-    public Product(String name, String shDesc, String loDesc, int stock, double price) {
-
-        this.name = name;
-        this.shDesc = shDesc;
-        this.loDesc = loDesc;
-        this.stock = stock;
-        this.price = price;
-
-        this.idNum = idNum;
-    }
-
     public String getIdNum() {
         return idNum;
     }

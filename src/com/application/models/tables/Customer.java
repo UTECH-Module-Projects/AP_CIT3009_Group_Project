@@ -1,5 +1,6 @@
 package com.application.models.tables;
 
+
 import com.application.models.Date;
 import com.application.models.Person;
 import com.application.models.Utilities;
