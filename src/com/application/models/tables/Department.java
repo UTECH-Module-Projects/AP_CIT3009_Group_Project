@@ -1,9 +1,10 @@
 package com.application.models.tables;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+// import jakarta.persistence.Column;
+// import jakarta.persistence.Entity;
+// import jakarta.persistence.Id;
+// import jakarta.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table (name = "Department")
