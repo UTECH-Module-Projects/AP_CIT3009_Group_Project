@@ -1,6 +1,9 @@
 package com.application.view;
 
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.plaf.TableHeaderUI;
+import javax.swing.plaf.TableUI;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
@@ -11,10 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.table.*;
 import net.miginfocom.swing.MigLayout;
-// import net.miginfocom.swing.MigLayout;
 import javax.swing.event.*;
-// import com.application.view.Product;
-import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 
 public class Checkout extends JFrame implements ListSelectionListener, ActionListener {
   private JTable table;
@@ -39,13 +40,12 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
   private String val4;
   // Variables to store chart info
   private Product prodtemp;
-  List<Product> datap = new ArrayList<Product>();
+  List<Product> dataProducts = new ArrayList<Product>();
 
-  int i =1;
   public void initializeComponents() {
-    this.setTitle("Jan’s Wholesale and Retail");
+    // product Initialization
     prodtemp = new Product();
-    System.out.println("Product test " + prodtemp);
+
     // border settings
     panelBorder = new LineBorder(Color.BLACK, 2, true);
 
@@ -97,7 +97,16 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     scroll.setPreferredSize(new Dimension(500, 300));
 
   }
-
+ public void addComponentsUI(){
+  //table ui config
+  table.setSelectionForeground(Color.BLACK);
+  table.setShowGrid(true);
+  table.setShowHorizontalLines(false);
+  // table.setFont("SansSerif",Font.,);
+  JTableHeader tableHeader = table.getTableHeader();
+  tableHeader.setForeground(Color.RED); 
+  
+ }
   public void addComponentsToPanel() {
     // Add components to Panel
     panel.add(lblTitle, "grow,span,push,wrap,");
@@ -209,6 +218,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
   }
 
   public void setWindowProperties() {
+    this.setTitle("Jan’s Wholesale and Retail");
     this.setSize(500, 500);
     this.setVisible(true);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -216,15 +226,9 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
 
   public Checkout() {
 
-    // Look and Feel
-    try {
-      UIManager.setLookAndFeel(new FlatLightLaf());
-    } catch (Exception ex) {
-      System.err.println("Failed to initialize LaF");
-    }
-
     this.setLayout(new MigLayout(" insets 20", "[][::100]"));
     tableCreation();
+    addComponentsUI();
     initializeComponents();
     addComponentsToPanel();
     addPanelsToWindow();
@@ -269,24 +273,28 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
   }
 
   public static void main(String[] args) {
+    // Look and Feel
+    try {
+      UIManager.setLookAndFeel(new FlatDarkLaf());
+    } catch (Exception ex) {
+      System.err.println("Failed to initialize LaF");
+    }
     new Checkout();
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    // System.out.println("\n\n Initial size "+data.size());
-    // Product prodtempAdd=prodtemp;
-    datap.add(new Product(prodtemp));
+    dataProducts.add(new Product(prodtemp));
 
     if (e.getSource() == b1) {
-      System.out.println("Clicked size=" + datap.size() + "\nData" + datap);
+      System.out.println("Clicked size=" + dataProducts.size() + "\nData" + dataProducts);
       // chart.tableCreation(data);
     } else if (e.getSource() == b2) {
-      if (datap.size() == 0) {
+      if (dataProducts.size() == 0) {
         JOptionPane.showMessageDialog(this, "The Shoping Cart is Empty Please add Items to cart", "Notice",
             JOptionPane.INFORMATION_MESSAGE);
       } else {
-        new Chart(datap);
+        new Chart(dataProducts);
       }
     }
   }
