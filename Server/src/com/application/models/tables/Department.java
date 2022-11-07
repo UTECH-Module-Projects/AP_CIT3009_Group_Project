@@ -20,4 +20,9 @@ public class Department implements Serializable {
         this.idNum = idNum;
         this.name = name;
     }
+
+    public Department(String ...fields) {
+        this.idNum = fields[0];
+        this.name = fields[1];
+    }
 }

@@ -5,9 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.io.Serializable;
+
 @Entity
 @Table (name = "Department")
-public class Department {
+public class Department implements Serializable {
     @Id
     @Column (name = "idNum")
     public final String idNum;
@@ -17,5 +19,10 @@ public class Department {
     public Department(String idNum, String name) {
         this.idNum = idNum;
         this.name = name;
+    }
+
+    public Department(String ...fields) {
+        this.idNum = fields[0];
+        this.name = fields[1];
     }
 }

@@ -3,29 +3,45 @@ package com.application.models.tables;
 import com.application.models.converters.InvoiceItemID;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table (name = "InvoiceItem")
 @IdClass(InvoiceItemID.class)
-public class InvoiceItem {
+public class InvoiceItem implements Serializable {
     @Id
+    @Column (name = "invID")
     private int invID;
     @Id
+    @Column (name = "prodID")
     private String prodID;
+
     @Column (name = "quantity")
     private int quantity;
     @Column (name = "unitPrice")
-    private float unitPrice;
+    private double unitPrice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Invoice invoice;
 
     public InvoiceItem() {
-        this.prodID = "";
         this.quantity = 0;
         this.unitPrice = 0.0f;
     }
 
-    public InvoiceItem(String prodID, int quantity, float unitPrice) {
+    public InvoiceItem(int invID, String prodID, int quantity, double unitPrice) {
+        this.invID = invID;
         this.prodID = prodID;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
+    }
+
+    public int getInvID() {
+        return invID;
+    }
+
+    public void setInvID(int invID) {
+        this.invID = invID;
     }
 
     public String getProdID() {
@@ -44,11 +60,19 @@ public class InvoiceItem {
         this.quantity = quantity;
     }
 
-    public float getUnitPrice() {
+    public double getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(float unitPrice) {
+    public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 }

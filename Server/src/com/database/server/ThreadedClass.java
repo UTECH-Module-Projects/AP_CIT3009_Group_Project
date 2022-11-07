@@ -1,15 +1,12 @@
 package com.database.server;
 
-import com.application.models.converters.InvoiceItemID;
 import com.application.models.tables.*;
 import org.hibernate.HibernateException;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List;
 
 public class ThreadedClass extends Thread {
     private final Socket socket;
@@ -47,7 +44,6 @@ public class ThreadedClass extends Thread {
             case "Customer" -> Server.custExeq.create((Customer) entity);
             case "Employee" -> Server.empExeq.create((Employee) entity);
             case "Invoice" -> Server.invExeq.create((Invoice) entity);
-            case "InvoiceItem" -> Server.invItemExeq.create((InvoiceItem) entity);
             case "Product" -> Server.prodExeq.create((Product) entity);
             default -> throw new HibernateException("Invalid Table Name! (" + table + ")");
         }
@@ -58,7 +54,6 @@ public class ThreadedClass extends Thread {
             case "Customer" -> Server.custExeq.update((Customer) entity);
             case "Employee" -> Server.empExeq.update((Employee) entity);
             case "Invoice" -> Server.invExeq.update((Invoice) entity);
-            case "InvoiceItem" -> Server.invItemExeq.update((InvoiceItem) entity);
             case "Product" -> Server.prodExeq.update((Product) entity);
             default -> throw new HibernateException("Invalid Table Name! (" + table + ")");
         }
@@ -69,7 +64,6 @@ public class ThreadedClass extends Thread {
             case "Customer" -> Server.custExeq.delete((String) id);
             case "Employee" -> Server.empExeq.delete((String) id);
             case "Invoice" -> Server.invExeq.delete((Integer) id);
-            case "InvoiceItem" -> Server.invItemExeq.delete((InvoiceItemID) id);
             case "Product" -> Server.prodExeq.delete((String) id);
             default -> throw new HibernateException("Invalid Table Name! (" + table + ")");
         }
@@ -80,7 +74,6 @@ public class ThreadedClass extends Thread {
             case "Customer" -> Server.custExeq.get((String) id);
             case "Employee" -> Server.empExeq.get((String) id);
             case "Invoice" -> Server.invExeq.get((Integer) id);
-            case "InvoiceItem" -> Server.invItemExeq.get((InvoiceItemID) id);
             case "Product" -> Server.prodExeq.get((String) id);
             default -> throw new HibernateException("Invalid Table Name! (" + table + ")");
         };
@@ -91,7 +84,6 @@ public class ThreadedClass extends Thread {
             case "Customer" -> Server.custExeq.getAll();
             case "Employee" -> Server.empExeq.getAll();
             case "Invoice" -> Server.invExeq.getAll();
-            case "InvoiceItem" -> Server.invItemExeq.getAll();
             case "Product" -> Server.prodExeq.getAll();
             default -> throw new HibernateException("Invalid Table Name! (" + table + ")");
         };
@@ -102,7 +94,6 @@ public class ThreadedClass extends Thread {
             case "Customer" -> Server.custExeq.genID(length);
             case "Employee" -> Server.empExeq.genID(length);
             case "Invoice" -> Server.invExeq.genID(length);
-            case "InvoiceItem" -> Server.invItemExeq.genID(length);
             case "Product" -> Server.prodExeq.genID(length);
             default -> throw new HibernateException("Invalid Table Name! (" + table + ")");
         };
@@ -156,7 +147,7 @@ public class ThreadedClass extends Thread {
                             int length = (int) objIs.readObject();
                             try {
                                 objOs.writeObject(genID(table, length));
-                            }  catch (HibernateException | ClassCastException e) {
+                            } catch (HibernateException | ClassCastException e) {
                                 e.printStackTrace();
                                 objOs.writeObject(null);
                             }

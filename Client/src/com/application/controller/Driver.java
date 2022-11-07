@@ -11,8 +11,10 @@ public class Driver {
     public static void main(String[] args) {
         try {
             Client client = new Client();
+
+            client.getAll("Customer").forEach(System.out::println);
             client.closeConnection();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

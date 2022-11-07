@@ -1,16 +1,15 @@
 package com.application.models.tables;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table (name = "Invoice")
-public class Invoice {
+public class Invoice implements Serializable {
     @Id
     @Column (name = "idNum")
     private int idNum;
@@ -26,6 +25,13 @@ public class Invoice {
 
     @Column (name = "total")
     private double total;
+
+    @OneToMany(
+            mappedBy = "invoice",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private final List<InvoiceItem> items = new ArrayList<>();
 
     public Invoice(int idNum, Date billDate, String empID, String custID, double total) {
         this.idNum = idNum;
@@ -76,5 +82,15 @@ public class Invoice {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public void addItem(InvoiceItem item) {
+        items.add(item);
+        item.setInvoice(this);
+    }
+
+    public void removeItem(InvoiceItem item) {
+        items.remove(item);
+        item.setInvoice(null);
     }
 }

@@ -21,6 +21,9 @@ public class InvoiceItem implements Serializable {
     @Column (name = "unitPrice")
     private double unitPrice;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Invoice invoice;
+
     public InvoiceItem() {
         this.quantity = 0;
         this.unitPrice = 0.0f;
@@ -63,5 +66,13 @@ public class InvoiceItem implements Serializable {
 
     public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 }
