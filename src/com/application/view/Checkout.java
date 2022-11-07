@@ -1,9 +1,6 @@
 package com.application.view;
 
 import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.FontUIResource;
-import javax.swing.plaf.TableHeaderUI;
-import javax.swing.plaf.TableUI;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
@@ -252,7 +249,6 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
           if (val3.equalsIgnoreCase("Product Name")) {
             txtProductNameDisplay.setText(val4);
             prodtemp.setProductName(val4);
-
           } else if (val3.equalsIgnoreCase("Cost")) {
             txtCostDisplay.setText(val4);
             prodtemp.setCost(val4);

@@ -87,20 +87,6 @@ public class Chart extends JFrame implements ListSelectionListener {
                 "Short Description"
         };
 
-        // data for JTable in a 2D table
-        // Object[][] data = new Object[][] {
-        //         { "Apple", 200.0, "Lorem ipsum dolor sit amet" },
-        //         { "Apricot", 200.0, "Lorem ipsum dolor sit amet" },
-        //         { "Avocado", 200.0, "Lorem ipsum dolor sit amet" },
-        //         { "Banana", 200.0, "Lorem ipsum dolor sit amet" },
-        //         { "Blackberries", 200.0, "Lorem ipsum dolor sit amet" },
-        //         { "Blackcurrant", 200.0, "Lorem ipsum dolor sit amet" },
-        //         { "Blueberries", 200.0, "Lorem ipsum dolor sit amet" },
-        //         { "Boysenberries", 200.0, "Lorem ipsum dolor sit amet" },
-        //         { "Capers", 200.0, "Lorem ipsum dolor sit amet" },
-        //         { "Cherry", 200.0, "Lorem ipsum dolor sit amet" },
-        // };
-
         // set the TableModel to get data from JTable
         TableModel model = new AbstractTableModel() {
             private static final long serialVersionUID = 1L;
