@@ -28,7 +28,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
   private JButton b1;
   private JButton b2;
   private JScrollPane scroll;
-
+  private  TableModel model;
   // variables to get selected value
   private int[] sel;
   private Object value;
@@ -118,12 +118,12 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
   }
 
   public void tableCreation() {
-    // JTable Headers
-    String[] columns = new String[] {
-        "Product Name",
-        "Cost",
-        "Short Description"
-    };
+   // JTable Headers
+   String[] columns = new String[] {
+    "Product Name",
+    "Cost",
+    "Short Description"
+};
 
     // data for JTable in a 2D table
     // Object[][] data = new Object[][] {
@@ -153,7 +153,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     data.add(new Product("Cherry", "200.00", "Lorem ipsum dolor sit amet"));
 
     // set the TableModel to get data from JTable
-    TableModel model = new AbstractTableModel() {
+    model = new AbstractTableModel() {
       private static final long serialVersionUID = 1L;
 
       public int getColumnCount() {
