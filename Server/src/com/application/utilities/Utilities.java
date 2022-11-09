@@ -89,10 +89,10 @@ public class Utilities {
     }
 
     /**
-     *  Checks if integer is Unique
-     * @param ids
-     * @param key
-     * @return
+     * Checks if a String is unique using a list of Strings
+     * @param arr The array of integers to test
+     * @param val The integer to test
+     * @return Whether the integer is unique (true or false)
      */
     public static boolean isUniqueInt(Integer[] arr, int val) {
         for (int id : arr)
