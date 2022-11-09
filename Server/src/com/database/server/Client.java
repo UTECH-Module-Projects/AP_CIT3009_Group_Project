@@ -77,7 +77,6 @@ public class Client {
         try {
             cs = new Socket("127.0.0.1", 8888);
         } catch (IOException e) {
-
             throw new RuntimeException(e);
         }
         log.trace("Socket Established.");
@@ -155,7 +154,7 @@ public class Client {
      * Retrieves an entity record from a table using an id
      *
      * @param table The table to perform the action on (eg: Customer)
-     * @param id    The ID Number of the entity being retrieved
+     * @param id The ID Number of the entity being retrieved
      * @return The retrieved entity record
      * @throws RuntimeException If any fatal errors occur when attempting to performing the operation
      */
