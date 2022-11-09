@@ -12,11 +12,11 @@ import java.awt.event.ActionListener;
 import javax.swing.table.*;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.event.*;
-import com.formdev.flatlaf.FlatDarkLaf;
+//import com.formdev.flatlaf.FlatDarkLaf;
 
 public class Checkout extends JFrame implements ListSelectionListener, ActionListener {
-  private JTable table;
-  private JPanel panel;
+  private JPanel cartPanel;
+  private JPanel productPanel;
   private JLabel lblCost;
   private JLabel lblTitle;
   private JLabel lblProductName;
@@ -27,8 +27,8 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
   private Border panelBorder;
   private JButton b1;
   private JButton b2;
-  private JScrollPane scroll;
-  private  TableModel model;
+  private JTabbedPane tabsPane;
+
   // variables to get selected value
   private int[] sel;
   private Object value;
@@ -37,21 +37,31 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
   private String val4;
   // Variables to store chart info
   private Product prodtemp;
+  private Table table2;
+  private Table table3;
   List<Product> dataProducts = new ArrayList<Product>();
 
   public void initializeComponents() {
     // product Initialization
     prodtemp = new Product();
+    table2= new Table(modeldaList());
+    table3= new Table(modeldaList());
+    cartPanel=new JPanel();
+    cartPanel.setLayout(new MigLayout("insets 0, novisualpadding", "[fill][::100][::500][]", ""));
 
     // border settings
-    panelBorder = new LineBorder(Color.BLACK, 2, true);
+    // panelBorder = new LineBorder(Color.BLACK, 2, true);
+
+    //tabs settings
+    tabsPane= new JTabbedPane();
+    
 
     // Panel Settings
-    panel = new JPanel();
-    panel.setBounds(40, 80, 900, 500);
-    panel.setLayout(new MigLayout("insets 0, novisualpadding", "[::100][][::500][]", ""));
-    panel.setVisible(true);
-    panel.setBorder(panelBorder);
+    productPanel = new JPanel();
+    productPanel.setBounds(40, 80, 900, 500);
+    productPanel.setLayout(new MigLayout("insets 0, novisualpadding", "[fill][::100][::500][]", ""));
+    productPanel.setVisible(true);
+    productPanel.setBorder(panelBorder);
 
     // Button creation
     b1 = new JButton("Add to Cart");
@@ -89,131 +99,54 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     lblTitle.setOpaque(true);
     lblTitle.setForeground(Color.WHITE);
 
-    // add table to scroll
-    scroll = new JScrollPane(table);
-    scroll.setPreferredSize(new Dimension(500, 300));
-
+      //LIStener
+      ListSelectionModel listModel = table2.getTable().getSelectionModel();
+      listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      listModel.addListSelectionListener(this);
   }
- public void addComponentsUI(){
-  //table ui config
-  table.setSelectionForeground(Color.BLACK);
-  table.setShowGrid(true);
-  table.setShowHorizontalLines(false);
-  // table.setFont("SansSerif",Font.,);
-  JTableHeader tableHeader = table.getTableHeader();
-  tableHeader.setForeground(Color.RED); 
-  
- }
+
   public void addComponentsToPanel() {
     // Add components to Panel
-    panel.add(lblTitle, "grow,span,push,wrap,");
-    panel.add(lblProductName, "width 100,gapright 5");
-    panel.add(txtProductNameDisplay, "pushx, growx, width 100");
-    panel.add(lblCost, "width 100");
-    panel.add(txtCostDisplay, "pushx, growx, width 100,wrap");
-    panel.add(lblLongDescription, "wrap,gapright 5");
-    panel.add(txtLongDescription, "wrap, span,growx,gapright 5,gapleft 5");
-    panel.add(b1, " al left ,gapbottom 5, gapleft 5");
-    panel.add(b2, " al right ,gapbottom 5");
+    productPanel.add(table2.initializeComponents(), "wrap, span, al center");
+    productPanel.add(lblTitle, "grow,span,push,wrap,");
+    productPanel.add(lblProductName, "width 100,gapright 5");
+    productPanel.add(txtProductNameDisplay, "pushx, growx, width 100");
+    productPanel.add(lblCost, "width 100");
+    productPanel.add(txtCostDisplay, "pushx, growx, width 100,wrap");
+    productPanel.add(lblLongDescription, "wrap,gapright 5");
+    productPanel.add(txtLongDescription, "wrap, span,growx,gapright 5,gapleft 5");
+    productPanel.add(b1, " al left ,gapbottom 5, gapleft 5");
+    productPanel.add(b2, " al right ,gapbottom 5");
+
+    //Panels 
+    cartPanel.add(table3.initializeComponents());
+
+    //tabs
+    tabsPane.add("Products List", productPanel);
+    tabsPane.add("Cart", cartPanel);
   }
+ public List<Product> modeldaList(){
+  List<Product> data = new ArrayList<Product>();
 
-  public void tableCreation() {
-   // JTable Headers
-   String[] columns = new String[] {
-    "Product Name",
-    "Cost",
-    "Short Description"
-};
-
-    // data for JTable in a 2D table
-    // Object[][] data = new Object[][] {
-    // { "Apple", 200.0,"Lorem ipsum dolor sit amet"},
-    // { "Apricot", 200.0,"Lorem ipsum dolor sit amet"},
-    // { "Avocado", 200.0,"Lorem ipsum dolor sit amet"},
-    // { "Banana", 200.0,"Lorem ipsum dolor sit amet"},
-    // { "Blackberries", 200.0,"Lorem ipsum dolor sit amet"},
-    // { "Blackcurrant", 200.0,"Lorem ipsum dolor sit amet"},
-    // { "Blueberries", 200.0,"Lorem ipsum dolor sit amet"},
-    // { "Boysenberries", 200.0,"Lorem ipsum dolor sit amet"},
-    // { "Capers", 200.0,"Lorem ipsum dolor sit amet"},
-    // { "Cherry", 200.0,"Lorem ipsum dolor sit amet"},
-    // };
-
-    // Create New Data List
-    List<Product> data = new ArrayList<Product>();
-    // Add Data to list
-    data.add(new Product("Apple", "200.00", "Lorem ipsum dolor sit amet"));
-    data.add(new Product("Apricot", "200.00", "Lorem ipsum dolor sit amet"));
-    data.add(new Product("Avocado", "200.00", "Lorem ipsum dolor sit amet"));
-    data.add(new Product("Banana", "200.00", "Lorem ipsum dolor sit amet"));
-    data.add(new Product("Blackberries", "200.00", "Lorem ipsum dolor sit amet"));
-    data.add(new Product("Blueberries", "200.00", "Lorem ipsum dolor sit amet"));
-    data.add(new Product("Blackcurrant", "200.00", "Lorem ipsum dolor sit amet"));
-    data.add(new Product("Boysenberries", "200.00", "Lorem ipsum dolor sit amet"));
-    data.add(new Product("Cherry", "200.00", "Lorem ipsum dolor sit amet"));
-
-    // set the TableModel to get data from JTable
-    model = new AbstractTableModel() {
-      private static final long serialVersionUID = 1L;
-
-      public int getColumnCount() {
-        return columns.length;
-      }
-
-      public int getRowCount() {
-        return data.size();
-      }
-
-      public Object getValueAt(int row, int col) {
-        // return data[row][col];
-        if (col == 0) {
-          return data.get(row).getProductName();
-        }
-        if (col == 1) {
-          return data.get(row).getCost();
-        }
-        if (col == 2) {
-          return data.get(row).getShortDes();
-        }
-        return null;
-      }
-
-      public String getColumnName(int column) {
-        return columns[column];
-      }
-
-      public Class<?> getColumnClass(int col) {
-        return getValueAt(0, col).getClass();
-      }
-
-      public void setValueAt(Object aValue, int row, int column) {
-        // data[row][column] = aValue;
-        if (column == 0) {
-          data.get(row).getProductName();
-        }
-        if (column == 1) {
-          data.get(row).getCost();
-        }
-        if (column == 2) {
-          data.get(row).getShortDes();
-        }
-        fireTableCellUpdated(row, column);
-
-      }
-    };
-
-    table = new JTable(model);
-
-    ListSelectionModel listModel = table.getSelectionModel();
-    listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    listModel.addListSelectionListener(this);
-  }
+  data.add(new Product("Apple", "200.00", "Lorem ipsum dolor sit amet"));
+  data.add(new Product("Apricot", "200.00", "Lorem ipsum dolor sit amet"));
+  data.add(new Product("Avocado", "200.00", "Lorem ipsum dolor sit amet"));
+  data.add(new Product("Banana", "200.00", "Lorem ipsum dolor sit amet"));
+  data.add(new Product("Blackberries", "200.00", "Lorem ipsum dolor sit amet"));
+  data.add(new Product("Blueberries", "200.00", "Lorem ipsum dolor sit amet"));
+  data.add(new Product("Blackcurrant", "200.00", "Lorem ipsum dolor sit amet"));
+  data.add(new Product("Boysenberries", "200.00", "Lorem ipsum dolor sit amet"));
+  data.add(new Product("Cherry", "200.00", "Lorem ipsum dolor sit amet"));
+  return data;
+ }
+ 
 
   public void addPanelsToWindow() {
-    this.getContentPane().add(scroll, "wrap, al center");
-    this.add(panel, "growx,al center");
+    // this.add(table2.initializeComponents(), "wrap, al center");
+    this.add(tabsPane);
   }
 
+ 
   public void setWindowProperties() {
     this.setTitle("Jan’s Wholesale and Retail");
     this.setSize(500, 500);
@@ -221,11 +154,13 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
 
+  // public List<Product> getCart(List<Product> dataProduct){
+  //   return dataProduct;
+  // }
+
   public Checkout() {
 
     this.setLayout(new MigLayout(" insets 20", "[][::100]"));
-    tableCreation();
-    addComponentsUI();
     initializeComponents();
     addComponentsToPanel();
     addPanelsToWindow();
@@ -236,12 +171,12 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
   public void valueChanged(ListSelectionEvent e) {
 
     if (!e.getValueIsAdjusting()) {
-      sel = table.getSelectedRows();
+      sel = table2.getTable().getSelectedRows();
       // testcol=table.getColumnName();
       if (sel.length > 0) {
         for (int i = 0; i < 3; i++) {
           // get data from JTable
-          TableModel tm = table.getModel();
+          TableModel tm = table2.getTable().getModel();
           value = tm.getValueAt(sel[0], i);
           val2 = tm.getColumnName(i);
           val3 = val2.toString();
@@ -270,26 +205,27 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
 
   public static void main(String[] args) {
     // Look and Feel
-    try {
-      UIManager.setLookAndFeel(new FlatDarkLaf());
-    } catch (Exception ex) {
-      System.err.println("Failed to initialize LaF");
-    }
+//    try {
+//      UIManager.setLookAndFeel(new FlatDarkLaf());
+//    } catch (Exception ex) {
+//      System.err.println("Failed to initialize LaF");
+//    }
     new Checkout();
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     dataProducts.add(new Product(prodtemp));
-
     if (e.getSource() == b1) {
       System.out.println("Clicked size=" + dataProducts.size() + "\nData" + dataProducts);
-      // chart.tableCreation(data);
+    //  ( (DefaultTableModel) (table3.getTable().getModel())).addRow(new String []{prodtemp.getProductName(),prodtemp.getCost(),prodtemp.getShortDes()});
+    table3.tableCreation(dataProducts);
     } else if (e.getSource() == b2) {
       if (dataProducts.size() == 0) {
         JOptionPane.showMessageDialog(this, "The Shoping Cart is Empty Please add Items to cart", "Notice",
             JOptionPane.INFORMATION_MESSAGE);
       } else {
+        // tabsPane.setSelectedIndex(1);
         new Chart(dataProducts);
       }
     }

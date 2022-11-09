@@ -1,6 +1,6 @@
 package com.application.models;
-// import jakarta.persistence.*;
-import javax.persistence.*;
+ import jakarta.persistence.*;
+//import javax.persistence.*;
 
 //Question 17
 @MappedSuperclass
