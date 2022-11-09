@@ -7,7 +7,7 @@
  * ~ Gabrielle Johnson      2005322
  * ~ Jazmin Hayles          2006754
  * ~ Rushawn White          2002469
- * ~ Barrignton Patternson  2008034
+ * ~ Barrignton Patterson  2008034
  *
  */
 
@@ -48,7 +48,7 @@ import org.apache.logging.log4j.Logger;
  * @author Gabrielle Johnson
  * @author Jazmin Hayles
  * @author Rushawn White
- * @author Barrignton Patternson
+ * @author Barrignton Patterson
  * @version 1.0
  */
 public class Server {

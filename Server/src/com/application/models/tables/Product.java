@@ -7,7 +7,7 @@
  * ~ Gabrielle Johnson      2005322
  * ~ Jazmin Hayles          2006754
  * ~ Rushawn White          2002469
- * ~ Barrignton Patternson  2008034
+ * ~ Barrignton Patterson  2008034
  *
  */
 package com.application.models.tables;

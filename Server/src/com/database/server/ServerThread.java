@@ -36,7 +36,7 @@ import java.net.Socket;
  * @author Gabrielle Johnson
  * @author Jazmin Hayles
  * @author Rushawn White
- * @author Barrignton Patternson
+ * @author Barrignton Patterson
  * @version 1.0
  */
 public class ServerThread extends Thread {

@@ -25,7 +25,7 @@ import jakarta.persistence.Converter;
  * @author Gabrielle Johnson
  * @author Jazmin Hayles
  * @author Rushawn White
- * @author Barrignton Patternson
+ * @author Barrignton Patterson
  * @version 1.0
  * */
 @Converter (autoApply = true)

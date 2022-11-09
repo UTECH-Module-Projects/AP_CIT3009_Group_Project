@@ -22,7 +22,7 @@ import java.io.Serializable;
  * @author Gabrielle Johnson
  * @author Jazmin Hayles
  * @author Rushawn White
- * @author Barrignton Patternson
+ * @author Barrignton Patterson
  * @version 1.0
  * */
 public class Date implements Serializable {
