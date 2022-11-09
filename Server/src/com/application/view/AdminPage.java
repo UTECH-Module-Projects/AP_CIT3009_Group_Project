@@ -1,3 +1,15 @@
+/*
+ * Advance Programming Group Project
+ * Date of Submission: 11/11/2022
+ * Lab Supervisor: Christopher Panther
+ *
+ * Group Members:-
+ * ~ Gabrielle Johnson      2005322
+ * ~ Jazmin Hayles          2006754
+ * ~ Rushawn White          2002469
+ * ~ Barrignton Patternson  2008034
+ *
+ */
 package com.application.view;
 
 import com.database.server.Client;
@@ -33,6 +45,10 @@ public class AdminPage extends Thread {
         this.isClosed = false;
     }
 
+    /**
+     * look and feel sets the appearance and behaviour of the swing GUI widgets
+     * @throws RuntimeException
+     */
     private void setLookAndFeel() throws RuntimeException {
         //FlatDarkLaf.setup();
         try {
@@ -53,6 +69,9 @@ public class AdminPage extends Thread {
         }
     }
 
+    /**
+     * initializing components within frame
+     */
     private void initializeComponents() {
         frame = new JFrame("Admin Page");
         frame.setLayout(new MigLayout("fill"));

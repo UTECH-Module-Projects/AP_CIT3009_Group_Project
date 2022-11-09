@@ -57,6 +57,10 @@ public class Department implements Serializable {
         this.name = name;
     }
 
+    /**
+     * Constructor Accepts zero or multiple field arguments to store into array
+     * @param fields
+     */
     public Department(String ...fields) {
         this.idNum = fields[0];
         this.name = fields[1];

@@ -135,6 +135,13 @@ public class ServerThread extends Thread {
         }
     }
 
+    /**
+     * Deletes an entity record for a table
+     *
+     * @param table The table to perform the action on (eg: Customer)
+     * @param id The ID Number of the entity being retrieved
+     * @throws HibernateException If any fatal errors occur when attempting to performing the operation
+     */
     private void delete(String table, Object id) throws HibernateException {
         //Switch Case which applies the action to the selected table
         switch (table) {
@@ -165,6 +172,14 @@ public class ServerThread extends Thread {
         };
     }
 
+    /**
+     * Retrieves the data from a column of a table
+     *
+     * @param table The table to perform the action on (eg: Customer)
+     * @param field The name of the column being retrieved (eg: address)
+     * @return A list containing the specified data for a column
+     * @throws HibernateException If any fatal errors occur when attempting to performing the operation
+     */
     private Object getColumn(String table, String field) throws HibernateException {
         //Switch Case which applies the action to the selected table
         return switch (table) {
