@@ -125,12 +125,21 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     productPanel.add(b1, " al left ,gapbottom 5, gapleft 5");
     productPanel.add(b2, " al right ,gapbottom 5");
 
+    //tabs
+    tabsPaneLeft.add("Cashier", cashierPanel);
+    tabsPaneLeft.add("Inventory", inventoryPanel);
+    tabsPaneTop.add("Products List", productPanel);
+    tabsPaneTop.add("Cart", cartPanel);
     //Panels 
     cartPanel.add(table3.initializeComponents());
+    cashierPanel.add(tabsPaneTop);
+
+
 
     //tabs
-    tabsPaneLeft.add("Products List", productPanel);
-    tabsPaneLeft.add("Cart", cartPanel);
+    tabsPaneLeft.add("Cashier", cashierPanel);
+    tabsPaneLeft.add("Inventory", inventoryPanel);
+
   }
  public List<Product> modeldaList(){
   List<Product> data = new ArrayList<Product>();
@@ -167,7 +176,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
 
   public Checkout() {
 
-    this.setLayout(new MigLayout(" insets 20", "[][::100]"));
+    this.setLayout(new MigLayout(" insets 20", "[][][::100]",""));
     initializeComponents();
     addComponentsToPanel();
     addPanelsToWindow();
