@@ -12,11 +12,13 @@ import java.awt.event.ActionListener;
 import javax.swing.table.*;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.event.*;
-//import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 
 public class Checkout extends JFrame implements ListSelectionListener, ActionListener {
   private JPanel cartPanel;
   private JPanel productPanel;
+  private JPanel inventoryPanel;
+  private JPanel cashierPanel;
   private JLabel lblCost;
   private JLabel lblTitle;
   private JLabel lblProductName;
@@ -27,7 +29,8 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
   private Border panelBorder;
   private JButton b1;
   private JButton b2;
-  private JTabbedPane tabsPane;
+  private JTabbedPane tabsPaneLeft;
+  private JTabbedPane tabsPaneTop;
 
   // variables to get selected value
   private int[] sel;
@@ -46,14 +49,14 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     prodtemp = new Product();
     table2= new Table(modeldaList());
     table3= new Table(modeldaList());
-    cartPanel=new JPanel();
-    cartPanel.setLayout(new MigLayout("insets 0, novisualpadding", "[fill][::100][::500][]", ""));
+
 
     // border settings
     // panelBorder = new LineBorder(Color.BLACK, 2, true);
 
     //tabs settings
-    tabsPane= new JTabbedPane();
+    tabsPaneLeft= new JTabbedPane(JTabbedPane.LEFT);
+    tabsPaneTop= new JTabbedPane();
     
 
     // Panel Settings
@@ -62,6 +65,10 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     productPanel.setLayout(new MigLayout("insets 0, novisualpadding", "[fill][::100][::500][]", ""));
     productPanel.setVisible(true);
     productPanel.setBorder(panelBorder);
+    cartPanel=new JPanel();
+    cartPanel.setLayout(new MigLayout("insets 0, novisualpadding", "[fill][::100][::500][]", ""));
+    cashierPanel= new JPanel();
+    inventoryPanel=new JPanel();
 
     // Button creation
     b1 = new JButton("Add to Cart");
@@ -99,7 +106,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     lblTitle.setOpaque(true);
     lblTitle.setForeground(Color.WHITE);
 
-      //LIStener
+      //Listener
       ListSelectionModel listModel = table2.getTable().getSelectionModel();
       listModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       listModel.addListSelectionListener(this);
@@ -122,8 +129,8 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     cartPanel.add(table3.initializeComponents());
 
     //tabs
-    tabsPane.add("Products List", productPanel);
-    tabsPane.add("Cart", cartPanel);
+    tabsPaneLeft.add("Products List", productPanel);
+    tabsPaneLeft.add("Cart", cartPanel);
   }
  public List<Product> modeldaList(){
   List<Product> data = new ArrayList<Product>();
@@ -143,7 +150,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
 
   public void addPanelsToWindow() {
     // this.add(table2.initializeComponents(), "wrap, al center");
-    this.add(tabsPane);
+    this.add(tabsPaneLeft);
   }
 
  
@@ -205,11 +212,11 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
 
   public static void main(String[] args) {
     // Look and Feel
-//    try {
-//      UIManager.setLookAndFeel(new FlatDarkLaf());
-//    } catch (Exception ex) {
-//      System.err.println("Failed to initialize LaF");
-//    }
+    try {
+      UIManager.setLookAndFeel(new FlatDarkLaf());
+    } catch (Exception ex) {
+      System.err.println("Failed to initialize LaF");
+    }
     new Checkout();
   }
 
