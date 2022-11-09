@@ -6,7 +6,18 @@ import com.application.models.misc.Person;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-
+/**
+ * <h1>Person Class</h1>
+ * <p>
+ * This is the Employee class
+ * </p>
+ *
+ * @author Gabrielle Johnson
+ * @author Jazmin Hayles
+ * @author Rushawn White
+ * @author Barrignton Patternson
+ * @version 1.0
+ * */
 @Entity
 @Table (name = "Employee")
 public class Employee extends Person {
@@ -16,6 +27,17 @@ public class Employee extends Person {
     @Column (name = "depCode")
     private String depCode;
 
+    /**
+     * Primary constructor for Employee
+     * @param idNum
+     * @param name
+     * @param dob
+     * @param address
+     * @param phoneNum
+     * @param email
+     * @param type
+     * @param depCode
+     */
     public Employee(String idNum, String name, Date dob, String address, String phoneNum, String email, String type, String depCode) {
         super(idNum, name, dob, address, phoneNum, email);
         this.type = type;
@@ -28,6 +50,10 @@ public class Employee extends Person {
         this.depCode = depCode;
     }
 
+    /**
+     *
+     * Mutators and accessors for class
+     */
     public String getType() {
         return type;
     }
@@ -44,6 +70,10 @@ public class Employee extends Person {
         this.depCode = depCode;
     }
 
+    /**
+     * Convert Employee Object to string
+     * @return
+     */
     @Override
     public String toString() {
         return "Employee{" +

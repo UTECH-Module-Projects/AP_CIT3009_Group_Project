@@ -168,6 +168,13 @@ public class ServerThread extends Thread {
         };
     }
 
+    /**
+     * Retrieves all entity records from a table
+     *
+     * @param table The table to perform the action on (eg: Customer)
+     * @return A list of entity records retrieved from the table
+     * @throws HibernateException If any fatal errors occur when attempting to performing the operation
+     */
     private Object getAll(String table) throws HibernateException {
         //Switch Case which applies the action to the selected table
         return switch (table) {
@@ -179,6 +186,14 @@ public class ServerThread extends Thread {
         };
     }
 
+    /**
+     * Generates a unique ID Number using the existing entity ID Numbers from a table
+     *
+     * @param table  The table to perform the action on (eg: Customer)
+     * @param length The length of the ID Number
+     * @return The generated ID Number
+     * @throws HibernateException If any fatal errors occur when attempting to performing the operation
+     */
     private Object genID(String table, int length) throws HibernateException, ClassCastException {
         //Switch Case which applies the action to the selected table
         return switch (table) {

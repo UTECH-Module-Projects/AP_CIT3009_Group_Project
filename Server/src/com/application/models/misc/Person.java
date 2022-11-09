@@ -5,8 +5,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
 import java.io.Serializable;
+/**
+ * <h1>Person Class</h1>
+ * <p>
+ * This is the Person class
+ * </p>
+ *
+ * @author Gabrielle Johnson
+ * @author Jazmin Hayles
+ * @author Rushawn White
+ * @author Barrignton Patternson
+ * @version 1.0
+ * */
 
-//Question 17
 @MappedSuperclass
 public abstract class Person implements Serializable {
     @Id
@@ -28,6 +39,9 @@ public abstract class Person implements Serializable {
     @Column (name = "email")
     protected String email;
 
+    /**
+     * Default constructor for person
+     */
     public Person() {
         this.idNum = "";
         this.name = "";
@@ -37,6 +51,15 @@ public abstract class Person implements Serializable {
         this.email = "";
     }
 
+    /**
+     * Primary constructor to get person from the database
+     * @param idNum
+     * @param name
+     * @param dob
+     * @param address
+     * @param phoneNum
+     * @param email
+     */
     public Person(String idNum, String name, Date dob, String address, String phoneNum, String email) {
         this.idNum = idNum;
         this.name = name;
@@ -46,6 +69,14 @@ public abstract class Person implements Serializable {
         this.email = email;
     }
 
+    /**
+     * Constructor created to create a new user
+     * @param name
+     * @param dob
+     * @param address
+     * @param phoneNum
+     * @param email
+     */
     public Person(String name, Date dob, String address, String phoneNum, String email) {
         this.name = name;
         this.dob = dob;
@@ -54,6 +85,10 @@ public abstract class Person implements Serializable {
         this.email = email;
     }
 
+    /**
+     * Copy Constructor for person
+     * @param person
+     */
     public Person(Person person) {
         this.idNum = person.idNum;
         this.name = person.name;
@@ -63,6 +98,10 @@ public abstract class Person implements Serializable {
         this.email = person.email;
     }
 
+    /**
+     *
+     * Mutators and accessors for table class
+     */
     public String getIdNum() {
         return idNum;
     }

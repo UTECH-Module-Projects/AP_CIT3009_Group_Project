@@ -1,3 +1,15 @@
+/*
+ * Advance Programming Group Project
+ * Date of Submission: 11/11/2022
+ * Lab Supervisor: Christopher Panther
+ *
+ * Group Members:-
+ * ~ Gabrielle Johnson      2005322
+ * ~ Jazmin Hayles          2006754
+ * ~ Rushawn White          2002469
+ * ~ Barrignton Patternson  2008034
+ *
+ */
 package com.application.models.tables;
 
 import com.application.models.misc.Date;
@@ -6,6 +18,20 @@ import com.application.utilities.Utilities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Getter;
+
+/**
+ * <h1>Customer Class</h1>
+ * <p>
+ * This is the Customer class
+ * </p>
+ *
+ * @author Gabrielle Johnson
+ * @author Jazmin Hayles
+ * @author Rushawn White
+ * @author Barrignton Patternson
+ * @version 1.0
+ * */
 
 @Getter
 @Entity
@@ -19,12 +45,26 @@ public class Customer extends Person {
     @Column(name = "dome")
     private Date dome;
 
+    /**
+     * Default constructor for customer class
+     */
     public Customer() {
         super();
         this.dom = new Date();
         this.dome = new Date();
     }
 
+    /**
+     * Primary Constructor for customer class
+     * @param idNum
+     * @param name
+     * @param dob
+     * @param address
+     * @param phoneNum
+     * @param email
+     * @param dom
+     * @param dome
+     */
     public Customer(String idNum, String name, Date dob, String address, String phoneNum, String email, Date dom, Date dome) {
         super(idNum, name, dob, address, phoneNum, email);
         this.dom = dom;
@@ -37,6 +77,10 @@ public class Customer extends Person {
         this.dome = null;
     }
 
+    /**
+     * Customer Copy constructors
+     * @param customer
+     */
     public Customer(Customer customer) {
         super(customer);
         this.dom = new Date(customer.getDom());
@@ -61,6 +105,10 @@ public class Customer extends Person {
                 '}';
     }
 
+    /**
+     * adds Customer an array
+     * @return
+     */
     public String[] toArray() {
         return new String[]{idNum, name, Utilities.checkNull(dob), address, phoneNum, email, Utilities.checkNull(dom), Utilities.checkNull(dome)};
     }
