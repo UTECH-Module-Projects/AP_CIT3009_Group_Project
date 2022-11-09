@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Table (name = "Invoice")
 public class Invoice implements Serializable {
+    public static final String[] fields = {"ID Number", "Billing Date", "Employee ID", "Customer ID", "Item Count", "Discount", "Total"};
     @Id
     @Column (name = "idNum")
     private int idNum;
@@ -22,6 +23,9 @@ public class Invoice implements Serializable {
 
     @Column (name = "custID")
     private String custID;
+
+    @Column (name = "discount")
+    private double discount;
 
     @Column (name = "total")
     private double total;
@@ -76,6 +80,18 @@ public class Invoice implements Serializable {
         this.custID = custID;
     }
 
+    public int getIdNum() {
+        return idNum;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
     public double getTotal() {
         return total;
     }
@@ -92,5 +108,9 @@ public class Invoice implements Serializable {
     public void removeItem(InvoiceItem item) {
         items.remove(item);
         item.setInvoice(null);
+    }
+
+    public String[] toArray() {
+        return new String[]{String.valueOf(this.idNum), this.billDate.toString(), this.empID, this.custID, String.valueOf(this.items.size()), String.format("$%.2f", this.discount), String.format("$%.2f", this.total)};
     }
 }

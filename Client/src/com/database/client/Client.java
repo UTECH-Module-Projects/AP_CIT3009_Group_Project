@@ -48,6 +48,15 @@ public class Client {
     }
 
     @SuppressWarnings("unchecked")
+    public ArrayList<Object> getColumn(String table, String field) throws IOException, ClassNotFoundException {
+        objOs.writeObject("getAll");
+        objOs.writeObject(table);
+        objOs.writeObject(field);
+
+        return (ArrayList<Object>) objIs.readObject();
+    }
+
+    @SuppressWarnings("unchecked")
     public ArrayList<Object> getAll(String table) throws IOException, ClassNotFoundException {
         objOs.writeObject("getAll");
         objOs.writeObject(table);

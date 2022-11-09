@@ -8,6 +8,7 @@ public interface GenericDAO<T, ID extends Serializable> {
     void update(T entity);
     void delete(ID id);
     T get(ID id);
+    List<Object> getColumn(String field);
     List<T> getAll();
     List<ID> getIDs();
     Object genID(int length);

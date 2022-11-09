@@ -1,15 +1,16 @@
 package com.application.models.tables;
 
+import com.application.models.misc.Date;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table (name = "Invoice")
 public class Invoice implements Serializable {
+    public static final String[] fields = {"ID Number", "Billing Date", "Employee ID", "Customer ID", "Item Count", "Discount", "Total"};
     @Id
     @Column (name = "idNum")
     private int idNum;
@@ -23,6 +24,9 @@ public class Invoice implements Serializable {
     @Column (name = "custID")
     private String custID;
 
+    @Column (name = "discount")
+    private double discount;
+
     @Column (name = "total")
     private double total;
 
@@ -33,18 +37,20 @@ public class Invoice implements Serializable {
     )
     private final List<InvoiceItem> items = new ArrayList<>();
 
-    public Invoice(int idNum, Date billDate, String empID, String custID, double total) {
+    public Invoice(int idNum, Date billDate, String empID, String custID, double discount, double total) {
         this.idNum = idNum;
         this.billDate = billDate;
         this.empID = empID;
         this.custID = custID;
+        this.discount = discount;
         this.total = total;
     }
 
-    public Invoice(Date billDate, String empID, String custID, double total) {
+    public Invoice(Date billDate, String empID, String custID, double discount, double total) {
         this.billDate = billDate;
         this.empID = empID;
         this.custID = custID;
+        this.discount = discount;
         this.total = total;
     }
 
@@ -76,6 +82,18 @@ public class Invoice implements Serializable {
         this.custID = custID;
     }
 
+    public int getIdNum() {
+        return idNum;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
     public double getTotal() {
         return total;
     }
@@ -92,5 +110,9 @@ public class Invoice implements Serializable {
     public void removeItem(InvoiceItem item) {
         items.remove(item);
         item.setInvoice(null);
+    }
+
+    public String[] toArray() {
+        return new String[]{String.valueOf(this.idNum), this.billDate.toString(), this.empID, this.custID, String.valueOf(this.items.size()), String.format("$%.2f", this.discount), String.format("$%.2f", this.total)};
     }
 }

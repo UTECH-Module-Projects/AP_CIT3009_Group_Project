@@ -1,14 +1,14 @@
-/**
+/*
  * Advance Programming Group Project
- * Date of Submission:
+ * Date of Submission: 11/11/2022
  * Lab Supervisor: Christopher Panther
- * <p>
+ *
  * Group Members:-
  * ~ Gabrielle Johnson      2005322
  * ~ Jazmin Hayles          2006754
  * ~ Rushawn White          2002469
  * ~ Barrignton Patternson  2008034
- * <p>
+ *
  */
 
 //Package
@@ -18,6 +18,7 @@ package com.database.server;
 
 import com.application.dao.generic.GenericJPADAO;
 import com.application.models.tables.*;
+import com.application.view.AdminPage;
 import com.database.session.SessionFactoryBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.HibernateException;
@@ -25,12 +26,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
-import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketTimeoutException;
 import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
@@ -52,22 +53,22 @@ import org.apache.logging.log4j.Logger;
  */
 public class Server {
     /**
-     * {@link SessionFactory} used to Generate the Entity Manager
+     * {@link SessionFactory} - Used to Generate the Entity Manager
      */
     private SessionFactory sf = SessionFactoryBuilder.getSessionFactory();
 
     /**
-     * {@link EntityManager} used to perform JPA DAO operations on the database
+     * {@link EntityManager} - Used to perform JPA DAO operations on the database
      */
     private EntityManager em;
 
     /**
-     * {@link ServerSocket} used to create a socket connection between the server and the client
+     * {@link ServerSocket} - Used to create a socket connection between the server and the client
      */
     private ServerSocket ss;
 
     /**
-     * {@link GenericJPADAO} executables used to perform generic operations on the database
+     * {@link GenericJPADAO} - Executables used to perform generic operations on the database
      */
     public static GenericJPADAO<Customer, String> custExeq;
     public static GenericJPADAO<Employee, String> empExeq;
@@ -81,22 +82,26 @@ public class Server {
     public static int totClients = 0;
 
     /**
+     * Keeps track of the number of clients who have connected overtime
+     */
+    public static int clientCount = 0;
+
+    /**
      * The Path for the boot file
      */
     private static final String bootPath = "src/com/database/properties/boot/boot.txt";
 
     /**
-     * {@link Logger} used to log all activities during the session
+     * {@link Logger} - Used to log all activities during the session
      */
-    public static Logger log = LogManager.getLogger(Server.class);
+    public static final Logger log = LogManager.getLogger(Server.class);
 
     /**
      * Default Constructor - Initializes the Server
      *
-     * @throws IOException
-     * @throws RuntimeException
+     * @throws RuntimeException If any fatal errors occur during the session
      */
-    public Server() throws IOException, RuntimeException {
+    public Server() throws RuntimeException {
         this.getSessionFactory();
         this.getEntityManager();
         this.createTableExecutors();
@@ -108,25 +113,35 @@ public class Server {
     /**
      * Gets the Session Factory from the Session Factory Builder Class
      *
-     * @throws HibernateException
+     * @throws RuntimeException If any fatal errors occur when getting the Session Factory
      */
-    private void getSessionFactory() throws HibernateException {
-        sf = SessionFactoryBuilder.getSessionFactory();
-        log.trace("Session factory generated.");
+    private void getSessionFactory() throws RuntimeException {
+        try {
+            sf = SessionFactoryBuilder.getSessionFactory();
+            log.trace("Session factory generated.");
+        } catch (HibernateException e) {
+            log.fatal("Hibernate Exception! {" + e.getMessage() + "}");
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Gets the Entity Manager from the Session Factory
      *
-     * @throws HibernateException
+     * @throws RuntimeException If any fatal errors occur when getting the Entity Manager
      */
-    private void getEntityManager() throws HibernateException {
-        Session s = sf.getCurrentSession();
-        Transaction t = s.getTransaction();
-        t.begin();
-        em = s.getEntityManagerFactory().createEntityManager();
-        t.commit();
-        log.trace("Entity manager generated.");
+    private void getEntityManager() throws RuntimeException {
+        try {
+            Session s = sf.getCurrentSession();
+            Transaction t = s.getTransaction();
+            t.begin();
+            em = s.getEntityManagerFactory().createEntityManager();
+            t.commit();
+            log.trace("Entity manager generated.");
+        } catch (HibernateException e) {
+            log.fatal("Hibernate Exception! {" + e.getMessage() + "}");
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -144,7 +159,7 @@ public class Server {
     /**
      * Checks if the Database has been initialized
      *
-     * @throws RuntimeException
+     * @throws RuntimeException If any fatal errors occur when checking if the database has booted up before
      */
     private void checkDatabaseBoot() throws RuntimeException {
         //Get Boot File
@@ -168,49 +183,81 @@ public class Server {
                     writer.write("true");
                     log.trace("Database setup status set to true.");
                 } catch (IOException e) {
-                    log.fatal("Boot File could not be found!");
+                    log.fatal("I/O Exception! {" + e.getMessage() + "}");
                     throw new RuntimeException(e);
                 }
             }
             log.trace("Database connection verified.");
         } catch (FileNotFoundException e) {
-            log.fatal("Boot File could not be found!");
+            log.fatal("File Not Found Exception! {" + e.getMessage() + "}");
             throw new RuntimeException(e);
         } catch (Exception e) {
-            log.fatal("Unknown error occurred!");
+            log.fatal("Unknown Error occurred! {" + e.getMessage() + "}");
             throw new RuntimeException(e);
         }
     }
 
     /**
      * Create a new Server Socket for clients to connect to
-     * @throws IOException
+     *
+     * @throws RuntimeException If any fatal errors occur when attempting to create the server socket
      */
-    private void createConnection() throws IOException {
-        this.ss = new ServerSocket(8888);
+    private void createConnection() throws RuntimeException {
+        try {
+            this.ss = new ServerSocket(8888);
+        } catch (IOException e) {
+            log.fatal("I/O Exception! {" + e.getMessage() + "}");
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Closes the Connections for the Socket, the Entity Manager, and the Session Factory
-     * @throws IOException
+     *
+     * @throws RuntimeException If any fatal errors occur when attempting to close the connection
      */
-    private void closeConnection() throws IOException {
-        ss.close();
-        em.close();
-        sf.close();
+    private void closeConnection() throws RuntimeException {
+        try {
+            ss.close();
+            em.close();
+            sf.close();
+            log.trace("Server Connection closed.");
+        } catch (IOException e) {
+            log.fatal("I/O Exception! {" + e.getMessage() + "}");
+            throw new RuntimeException(e);
+        }
     }
 
     /**
      * Starts Server Application and Waits for Socket Requests from Clients.
      * This creates a new Thread for the Client to perform operations.
-     * @throws IOException
+     *
+     * @throws RuntimeException If any fatal errors occur when waiting for requests from clients
      */
-    private void waitForRequests() throws IOException {
-        JOptionPane.showMessageDialog(null, "Server Connected!", "Server Status", JOptionPane.INFORMATION_MESSAGE);
+    private void waitForRequests() throws RuntimeException {
+        //Generate Admin Page
+        AdminPage adminPage = new AdminPage();
+        adminPage.start();
+
         do {
-            ThreadedClass thread = new ThreadedClass(ss.accept());
-            thread.start();
-        } while (totClients > 0);
+            try {
+                //Create new Thread to communicate with Client
+                ServerThread thread = new ServerThread(ss.accept(), ++clientCount);
+                thread.start();
+                log.trace("New Client has connected. Total: " + ++totClients);
+            } catch (SecurityException e) {
+                log.fatal("Security Exception! {" + e.getMessage() + "}");
+                throw new RuntimeException(e);
+            } catch (SocketTimeoutException e) {
+                log.fatal("Socket Timeout Exception! {" + e.getMessage() + "}");
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                log.fatal("I/O Exception! {" + e.getMessage() + "}");
+                throw new RuntimeException(e);
+            }
+        } while (!adminPage.isClosed());
+
+        //End Connection When Admin Page is closed
         closeConnection();
     }
 }

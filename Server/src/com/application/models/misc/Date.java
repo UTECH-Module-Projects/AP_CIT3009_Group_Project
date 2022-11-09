@@ -59,6 +59,6 @@ public class Date implements Serializable {
 
     @Override
     public String toString() {
-        return Months[this.month-1] + " " + this.day + ", " + this.year;
+        return this.year + "-" + this.month + "-" + this.day;
     }
 }
