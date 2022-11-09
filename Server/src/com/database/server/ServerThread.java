@@ -146,6 +146,14 @@ public class ServerThread extends Thread {
         }
     }
 
+    /**
+     * Retrieves an entity record from a table using an id
+     *
+     * @param table The table to perform the action on (eg: Customer)
+     * @param id The ID Number of the entity being retrieved
+     * @return The retrieved entity record
+     * @throws HibernateException If any fatal errors occur when attempting to performing the operation
+     */
     private Object get(String table, Object id) throws HibernateException {
         //Switch Case which applies the action to the selected table
         return switch (table) {
@@ -205,6 +213,11 @@ public class ServerThread extends Thread {
         };
     }
 
+    /**
+     * Accepts and perform actions sent from the client
+     * Actions: Create, Update, Delete, Get, Get Column, Get All, Generate ID
+     * Executes action on the database and returns the result
+     */
     @Override
     public void run() {
         try {

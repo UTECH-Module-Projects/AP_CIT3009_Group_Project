@@ -63,12 +63,19 @@ public class AdminPage extends Thread {
         iPNL = new IPNL(this);
     }
 
+    /**
+     * Adds side Panes to frame with unique tab icons
+     */
     private void addSidePanesToFrame() {
         sideTPNE.addTab(" Customer", new ImageIcon("src/com/application/view/images/icon_customer.png"), cPNL.getPnl());
         sideTPNE.addTab(" Invoice", new ImageIcon("src/com/application/view/images/icon_invoice.png"), iPNL.getPnl());
         frame.add(sideTPNE, "grow");
     }
 
+    /**
+     * Sets the window properties of the frame
+     * @throws RuntimeException  If any fatal errors occur when configuring the object streams
+     */
     private void setWindowProperties() throws RuntimeException {
         frame.setSize(1000, 500);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -87,6 +94,10 @@ public class AdminPage extends Thread {
         });
     }
 
+    /**
+     * Accepts and perform actions sent from the client
+     * Executes action on the database and returns the result
+     */
     @Override
     public void run() {
         client = new Client();
