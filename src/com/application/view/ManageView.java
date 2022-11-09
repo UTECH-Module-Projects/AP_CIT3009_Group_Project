@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+
 public class ManageView {
     private JFrame frame;
     private JTable table;
@@ -26,6 +27,7 @@ public class ManageView {
                  IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+
 
         initializeComponents();
         addComponentsToFrame();
