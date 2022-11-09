@@ -7,12 +7,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
-
+@Getter
 @Entity
 @Table(name = "Customer")
 public class Customer extends Person {
     public static final String[] fields = {"ID Number", "Full Name", "Date of Birth", "Address", "Phone Number", "Email", "Date of Membership", "Date of Expiry"};
     public static final int idLength = 8;
+
     @Column(name = "dom")
     private Date dom;
     @Column(name = "dome")
@@ -36,40 +37,16 @@ public class Customer extends Person {
         this.dome = null;
     }
 
-    public Customer(String name, Date dob, String address, String phoneNum, String email, Date dom, Date dome) {
-        super(name, dob, address, phoneNum, email);
-        this.dom = dom;
-        this.dome = dome;
-    }
-
-    public Customer(String name, Date dob, String address, String phoneNum, String email) {
-        super(name, dob, address, phoneNum, email);
-        this.dom = null;
-        this.dome = null;
-    }
-
     public Customer(Customer customer) {
         super(customer);
-        this.dom = new Date();
-        this.dome = new Date();
+        this.dom = new Date(customer.getDom());
+        this.dome = new Date(customer.getDome());
     }
 
-    public Date getDom() {
-        return dom;
-    }
-
-    public void setDom(Date dom) {
-        this.dom = dom;
-    }
-
-    public Date getDome() {
-        return dome;
-    }
-
-    public void setDome(Date dome) {
-        this.dome = dome;
-    }
-
+    /**
+     * Convert customer Object to string
+     * @return
+     */
     @Override
     public String toString() {
         return "Customer{" +

@@ -55,33 +55,59 @@ public class ServerThread extends Thread {
      */
     private final int clientNum;
 
+    /**
+     * Default Constructor - Initializes the Server Thread
+     *
+     * @param socket The connection socket for the server thread
+     * @param clientNum The id number for the client
+     */
     public ServerThread(Socket socket, int clientNum) {
         this.socket = socket;
         this.clientNum = clientNum;
         configureStreams();
     }
 
-    private void configureStreams() {
+    /**
+     * Configures the Objects Streams using the Connection Socket
+     *
+     * @throws RuntimeException If any fatal errors occur when configuring the object streams
+     */
+    private void configureStreams() throws RuntimeException {
         try {
             objOs = new ObjectOutputStream(socket.getOutputStream());
             objIs = new ObjectInputStream(socket.getInputStream());
             Server.log.trace("[Client-" + this.clientNum + "] Object Streams Initialized.");
         } catch (IOException e) {
-            e.printStackTrace();
+            Server.log.fatal("[Client-" + this.clientNum + "] I/O Exception! {" + e.getMessage() + "}");
+            throw new RuntimeException(e);
         }
     }
 
-    private void closeConnection() {
+    /**
+     * Closes the Connection between the Client and Server
+     *
+     * @throws RuntimeException If any fatal errors occur when closing the connection from the server
+     */
+    private void closeConnection() throws RuntimeException {
         try {
             objOs.close();
             objIs.close();
             Server.log.trace("[Client-" + this.clientNum + "] Client Has Disconnected. Total: " + --Server.totClients);
         } catch (IOException e) {
-            e.printStackTrace();
+            Server.log.fatal("[Client-" + this.clientNum + "] I/O Exception! {" + e.getMessage() + "}");
+            throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Creates a new entity record for a table
+     *
+     * @param table The table to perform the action on (eg: Customer)
+     * @param entity The entity to be applied on the table
+     * @throws HibernateException If any fatal errors occur when attempting to performing the operation
+     */
     private void create(String table, Object entity) throws HibernateException {
+        //Switch Case which applies the action to the selected table
         switch (table) {
             case "Customer" -> Server.custExeq.create((Customer) entity);
             case "Employee" -> Server.empExeq.create((Employee) entity);
@@ -91,7 +117,15 @@ public class ServerThread extends Thread {
         }
     }
 
+    /**
+     * Updates an entity record for a table
+     *
+     * @param table The table to perform the action on (eg: Customer)
+     * @param entity The entity to be applied on the table
+     * @throws HibernateException If any fatal errors occur when attempting to performing the operation
+     */
     private void update(String table, Object entity) throws HibernateException {
+        //Switch Case which applies the action to the selected table
         switch (table) {
             case "Customer" -> Server.custExeq.update((Customer) entity);
             case "Employee" -> Server.empExeq.update((Employee) entity);
@@ -102,6 +136,7 @@ public class ServerThread extends Thread {
     }
 
     private void delete(String table, Object id) throws HibernateException {
+        //Switch Case which applies the action to the selected table
         switch (table) {
             case "Customer" -> Server.custExeq.delete((String) id);
             case "Employee" -> Server.empExeq.delete((String) id);
@@ -112,6 +147,7 @@ public class ServerThread extends Thread {
     }
 
     private Object get(String table, Object id) throws HibernateException {
+        //Switch Case which applies the action to the selected table
         return switch (table) {
             case "Customer" -> Server.custExeq.get((String) id);
             case "Employee" -> Server.empExeq.get((String) id);
@@ -122,6 +158,7 @@ public class ServerThread extends Thread {
     }
 
     private Object getColumn(String table, String field) throws HibernateException {
+        //Switch Case which applies the action to the selected table
         return switch (table) {
             case "Customer" -> Server.custExeq.getColumn(field);
             case "Employee" -> Server.empExeq.getColumn(field);
@@ -132,6 +169,7 @@ public class ServerThread extends Thread {
     }
 
     private Object getAll(String table) throws HibernateException {
+        //Switch Case which applies the action to the selected table
         return switch (table) {
             case "Customer" -> Server.custExeq.getAll();
             case "Employee" -> Server.empExeq.getAll();
@@ -142,6 +180,7 @@ public class ServerThread extends Thread {
     }
 
     private Object genID(String table, int length) throws HibernateException, ClassCastException {
+        //Switch Case which applies the action to the selected table
         return switch (table) {
             case "Customer" -> Server.custExeq.genID(length);
             case "Employee" -> Server.empExeq.genID(length);
@@ -154,24 +193,40 @@ public class ServerThread extends Thread {
     @Override
     public void run() {
         try {
+            //Indefinite While Loop which terminates when the action is 'exit'
             do {
+                //Get Action from Client
                 String action = (String) objIs.readObject();
+
+                //If Action is Exit
                 if (action.equals("exit")) {
                     Server.log.trace("[Client-" + this.clientNum + "] 'exit' operation performed.");
                     this.closeConnection();
                     return;
                 }
+
+                //Get Specified Table from Client
                 String table = (String) objIs.readObject();
 
+                //Switch case on Action to Perform
                 switch (action) {
+
+                    //Merged Cases for Create, Update, and Delete Operation
                     case "create", "update", "delete" -> {
+
+                        //Get entity record from Client
                         Object entity = objIs.readObject();
+
                         try {
+
+                            //Switch Case for Create, Update, and Delete
                             switch (action) {
                                 case "create" -> create(table, entity);
                                 case "update" -> update(table, entity);
                                 case "delete" -> delete(table, entity);
                             }
+
+                            //Return operation was successful (true)
                             objOs.writeObject(true);
                         } catch (HibernateException e) {
                             Server.log.warn("[Client-" + this.clientNum + "] Hibernate Exception! {" + e.getMessage() + "}");
@@ -179,9 +234,14 @@ public class ServerThread extends Thread {
                         }
                     }
 
+                    //Case for Get Operation
                     case "get" -> {
+
+                        //Get the ID Number from Client
                         Object id = objIs.readObject();
+
                         try {
+                            //Attempt to retrieve and return the entity record from the table
                             objOs.writeObject(get(table, id));
                         } catch (HibernateException e) {
                             Server.log.warn("[Client-" + this.clientNum + "] Hibernate Exception! {" + e.getMessage() + "}");
@@ -189,9 +249,13 @@ public class ServerThread extends Thread {
                         }
                     }
 
+                    //Case for Get Column Operation
                     case "getColumn" -> {
+
+                        //Get the Column Field from the Client
                         String field = (String) objIs.readObject();
                         try {
+                            //Attempt to retrieve and return the column data from the table
                             objOs.writeObject(getColumn(table, field));
                         } catch (HibernateException e) {
                             Server.log.warn("[Client-" + this.clientNum + "] Hibernate Exception! {" + e.getMessage() + "}");
@@ -199,8 +263,10 @@ public class ServerThread extends Thread {
                         }
                     }
 
+                    //Case for Get All Operation
                     case "getAll" -> {
                         try {
+                            //Attempt to retrieve and return all the data from the table
                             objOs.writeObject(getAll(table));
                         } catch (HibernateException e) {
                             Server.log.warn("[Client-" + this.clientNum + "] Hibernate Exception! {" + e.getMessage() + "}");
@@ -208,9 +274,14 @@ public class ServerThread extends Thread {
                         }
                     }
 
+                    //Case for Generate ID Operation
                     case "genID" -> {
+
+                        //Get the length of the ID Number
                         int length = (int) objIs.readObject();
+
                         try {
+                            //Attempt to generate and return a unique id based on existing id numbers from the table
                             objOs.writeObject(genID(table, length));
                         } catch (HibernateException e) {
                             Server.log.warn("[Client-" + this.clientNum + "] Hibernate Exception! {" + e.getMessage() + "}");
@@ -242,6 +313,8 @@ public class ServerThread extends Thread {
         } catch (Exception e) {
             Server.log.fatal("[Client-" + this.clientNum + "] Unknown error occurred! {" + e.getMessage() + "}");
         }
+
+        //Close the connection after fatal error
         this.closeConnection();
     }
 }

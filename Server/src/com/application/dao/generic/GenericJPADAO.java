@@ -10,6 +10,7 @@ import org.hibernate.HibernateException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntFunction;
 
 public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, ID> {
     private final Class<T> tClass;
@@ -74,24 +75,17 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
 
     public Object genID(int length) throws HibernateException, ClassCastException {
         List<ID> ids = getIDs();
-        ids.forEach(System.out::println);
-        Object id;
 
         switch (ids.get(0).getClass().getSimpleName()) {
             case "String" -> {
-                List<String> strIds = new ArrayList<>();
-                ids.forEach(idNum -> strIds.add((String) idNum));
-                id = Utilities.generateUniqueIDString(strIds.toArray(new String[0]), length);
+                List<String> strIds = ids.stream().map(idNum -> (String) idNum).toList();
+                return Utilities.generateUniqueIDString(strIds.toArray(new String[0]), length);
             }
             case "Integer" -> {
-                List<Integer> intIds = new ArrayList<>();
-                ids.forEach(idNum -> intIds.add((Integer) idNum));
-                id = Utilities.generateUniqueIDInt(intIds.toArray(new Integer[0]), length);
+                List<Integer> intIds = ids.stream().map(idNum -> (Integer) idNum).toList();
+                return Utilities.generateUniqueIDInt(intIds.toArray(new Integer[0]), length);
             }
             default -> throw new HibernateException("Invalid ID Type!");
         }
-
-        System.out.println(id);
-        return id;
     }
 }

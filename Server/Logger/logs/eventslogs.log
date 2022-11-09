@@ -134,3 +134,18 @@
 [TRACE] 2022-11-08 20:21:16:425 [AWT-EventQueue-0] Client     - Connections to Server closed.
 [TRACE] 2022-11-08 20:21:16:425 [Thread-3        ] Server     - [Client-1] 'exit' operation performed.
 [TRACE] 2022-11-08 20:21:16:426 [Thread-3        ] Server     - [Client-1] Client Has Disconnected. Total: 0
+[TRACE] 2022-11-08 21:29:18:030 [main            ] Server     - Session factory generated.
+[TRACE] 2022-11-08 21:29:19:082 [main            ] Server     - Entity manager generated.
+[TRACE] 2022-11-08 21:29:19:129 [main            ] Server     - Generic table executors generated.
+[TRACE] 2022-11-08 21:29:19:353 [main            ] Server     - Database connection verified.
+[TRACE] 2022-11-08 21:29:21:142 [Thread-2        ] Client     - Socket Established.
+[TRACE] 2022-11-08 21:29:21:431 [Thread-2        ] Client     - Object Streams Initialized.
+[TRACE] 2022-11-08 21:29:21:431 [main            ] Server     - [Client-1] Object Streams Initialized.
+[TRACE] 2022-11-08 21:29:21:431 [Thread-2        ] Client     - Client Established.
+[TRACE] 2022-11-08 21:29:21:432 [main            ] Server     - New Client has connected. Total: 1
+[TRACE] 2022-11-08 21:29:35:345 [Thread-2        ] Client     - Look and Feel was set to JTattoo.
+[TRACE] 2022-11-08 21:29:37:152 [Thread-2        ] Client     - getAll operation performed on Customer.
+[TRACE] 2022-11-08 21:29:40:986 [Thread-2        ] Server     - Admin Page Generated.
+[TRACE] 2022-11-08 21:33:09:104 [Thread-3        ] Server     - [Client-1] 'exit' operation performed.
+[TRACE] 2022-11-08 21:33:09:104 [AWT-EventQueue-0] Client     - Connections to Server closed.
+[TRACE] 2022-11-08 21:33:09:105 [Thread-3        ] Server     - [Client-1] Client Has Disconnected. Total: 0
