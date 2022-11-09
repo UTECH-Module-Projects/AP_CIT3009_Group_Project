@@ -1,4 +1,0 @@
-false
-ACC, Account and Sales
-INV, Inventory
-MAN, Management

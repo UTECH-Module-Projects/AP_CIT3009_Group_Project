@@ -16,7 +16,9 @@ package com.database.server;
 
 //Imported Libraries
 
+import com.application.generic.SQLCondBuilder;
 import com.application.models.tables.*;
+import jakarta.persistence.NoResultException;
 import org.hibernate.HibernateException;
 
 import java.io.*;
@@ -26,9 +28,9 @@ import java.net.Socket;
 /**
  * <h1>Server Thread Class</h1>
  * <p>
- * This Class is designed to allow multiple clients to communication with the server simultaneously using Threading
- * A Client will establish a connection socket with the server thread and this class will perform the operations
- * on the database.
+ *     This Class is designed to allow multiple clients to communication with the server simultaneously using Threading
+ *     A Client will establish a connection socket with the server thread and this class will perform the operations
+ *     on the database.
  * </p>
  *
  * @author Gabrielle Johnson
@@ -53,17 +55,15 @@ public class ServerThread extends Thread {
     /**
      * A unique number assigned to a client
      */
-    private final int clientNum;
+    private String clientID;
 
     /**
      * Default Constructor - Initializes the Server Thread
      *
      * @param socket The connection socket for the server thread
-     * @param clientNum The id number for the client
      */
-    public ServerThread(Socket socket, int clientNum) {
+    public ServerThread(Socket socket) {
         this.socket = socket;
-        this.clientNum = clientNum;
         configureStreams();
     }
 
@@ -76,9 +76,9 @@ public class ServerThread extends Thread {
         try {
             objOs = new ObjectOutputStream(socket.getOutputStream());
             objIs = new ObjectInputStream(socket.getInputStream());
-            Server.log.trace("[Client-" + this.clientNum + "] Object Streams Initialized.");
+            Server.log.trace("Object Streams Initialized.");
         } catch (IOException e) {
-            Server.log.fatal("[Client-" + this.clientNum + "] I/O Exception! {" + e.getMessage() + "}");
+            Server.log.fatal("I/O Exception! {" + e.getMessage() + "}");
             throw new RuntimeException(e);
         }
     }
@@ -92,9 +92,9 @@ public class ServerThread extends Thread {
         try {
             objOs.close();
             objIs.close();
-            Server.log.trace("[Client-" + this.clientNum + "] Client Has Disconnected. Total: " + --Server.totClients);
+            Server.log.trace("[Client-" + this.clientID + "] Client Has Disconnected. Total: " + --Server.totClients);
         } catch (IOException e) {
-            Server.log.fatal("[Client-" + this.clientNum + "] I/O Exception! {" + e.getMessage() + "}");
+            Server.log.fatal("[Client-" + this.clientID + "] I/O Exception! {" + e.getMessage() + "}");
             throw new RuntimeException(e);
         }
     }
@@ -229,13 +229,52 @@ public class ServerThread extends Thread {
     }
 
     /**
-     * Accepts and perform actions sent from the client
+     * Retrieves an entity record using a collection of SQL conditions
+     *
+     * @param table The table to perform the action on (eg: Customer)
+     * @param conditions A collection of SQL conditions used to search for entity records
+     * @return The first entity record which matches the condition
+     * @throws HibernateException If any fatal errors occur when attempting to performing the operation
+     */
+    private Object findMatch(String table, SQLCondBuilder[] conditions) throws HibernateException {
+        //Switch Case which applies the action to the selected table
+        return switch (table) {
+            case "Customer" -> Server.custExeq.findMatch(conditions);
+            case "Employee" -> Server.empExeq.findMatch(conditions);
+            case "Invoice" -> Server.invExeq.findMatch(conditions);
+            case "Product" -> Server.prodExeq.findMatch(conditions);
+            default -> throw new HibernateException("Invalid Table Name! (opp: findMatch, table: " + table + ")");
+        };
+    }
+
+    /**
+     * Retrieves entity records using a collection of SQL conditions
+     *
+     * @param table The table to perform the action on (eg: Customer)
+     * @param conditions A collection of SQL conditions used to search for entity records
+     * @return All entity records which match the condition
+     * @throws HibernateException If any fatal errors occur when attempting to performing the operation
+     */
+    private Object findMatchAll(String table, SQLCondBuilder[] conditions) throws HibernateException {
+        //Switch Case which applies the action to the selected table
+        return switch (table) {
+            case "Customer" -> Server.custExeq.findMatchAll(conditions);
+            case "Employee" -> Server.empExeq.findMatchAll(conditions);
+            case "Invoice" -> Server.invExeq.findMatchAll(conditions);
+            case "Product" -> Server.prodExeq.findMatchAll(conditions);
+            default -> throw new HibernateException("Invalid Table Name! (opp: findMatchAll, table: " + table + ")");
+        };
+    }
+
+    /**
+     * Accepts and perform actions sent from the client.
+     * Executes action on the database and returns the result.
      * Actions: Create, Update, Delete, Get, Get Column, Get All, Generate ID
-     * Executes action on the database and returns the result
      */
     @Override
     public void run() {
         try {
+            this.clientID = (String) objIs.readObject();
             //Indefinite While Loop which terminates when the action is 'exit'
             do {
                 //Get Action from Client
@@ -243,7 +282,7 @@ public class ServerThread extends Thread {
 
                 //If Action is Exit
                 if (action.equals("exit")) {
-                    Server.log.trace("[Client-" + this.clientNum + "] 'exit' operation performed.");
+                    Server.log.info("[Client-" + this.clientID + "] 'exit' operation performed.");
                     this.closeConnection();
                     return;
                 }
@@ -254,7 +293,7 @@ public class ServerThread extends Thread {
                 //Switch case on Action to Perform
                 switch (action) {
 
-                    //Merged Cases for Create, Update, and Delete Operation
+                    //Merged Cases for Create, Update, and Delete Operations
                     case "create", "update", "delete" -> {
 
                         //Get entity record from Client
@@ -272,7 +311,7 @@ public class ServerThread extends Thread {
                             //Return operation was successful (true)
                             objOs.writeObject(true);
                         } catch (HibernateException e) {
-                            Server.log.warn("[Client-" + this.clientNum + "] Hibernate Exception! {" + e.getMessage() + "}");
+                            Server.log.warn("[Client-" + this.clientID + "] Hibernate Exception! {" + e.getMessage() + "}");
                             objOs.writeObject(false);
                         }
                     }
@@ -287,7 +326,10 @@ public class ServerThread extends Thread {
                             //Attempt to retrieve and return the entity record from the table
                             objOs.writeObject(get(table, id));
                         } catch (HibernateException e) {
-                            Server.log.warn("[Client-" + this.clientNum + "] Hibernate Exception! {" + e.getMessage() + "}");
+                            Server.log.warn("[Client-" + this.clientID + "] Hibernate Exception! {" + e.getMessage() + "}");
+                            objOs.writeObject(null);
+                        } catch (NoResultException e) {
+                            Server.log.warn("[Client-" + this.clientID + "] No Result Exception! {" + e.getMessage() + "}");
                             objOs.writeObject(null);
                         }
                     }
@@ -301,7 +343,10 @@ public class ServerThread extends Thread {
                             //Attempt to retrieve and return the column data from the table
                             objOs.writeObject(getColumn(table, field));
                         } catch (HibernateException e) {
-                            Server.log.warn("[Client-" + this.clientNum + "] Hibernate Exception! {" + e.getMessage() + "}");
+                            Server.log.warn("[Client-" + this.clientID + "] Hibernate Exception! {" + e.getMessage() + "}");
+                            objOs.writeObject(null);
+                        } catch (NoResultException e) {
+                            Server.log.warn("[Client-" + this.clientID + "] No Result Exception! {" + e.getMessage() + "}");
                             objOs.writeObject(null);
                         }
                     }
@@ -312,7 +357,10 @@ public class ServerThread extends Thread {
                             //Attempt to retrieve and return all the data from the table
                             objOs.writeObject(getAll(table));
                         } catch (HibernateException e) {
-                            Server.log.warn("[Client-" + this.clientNum + "] Hibernate Exception! {" + e.getMessage() + "}");
+                            Server.log.warn("[Client-" + this.clientID + "] Hibernate Exception! {" + e.getMessage() + "}");
+                            objOs.writeObject(null);
+                        } catch (NoResultException e) {
+                            Server.log.warn("[Client-" + this.clientID + "] No Result Exception! {" + e.getMessage() + "}");
                             objOs.writeObject(null);
                         }
                     }
@@ -327,34 +375,55 @@ public class ServerThread extends Thread {
                             //Attempt to generate and return a unique id based on existing id numbers from the table
                             objOs.writeObject(genID(table, length));
                         } catch (HibernateException e) {
-                            Server.log.warn("[Client-" + this.clientNum + "] Hibernate Exception! {" + e.getMessage() + "}");
+                            Server.log.warn("[Client-" + this.clientID + "] Hibernate Exception! {" + e.getMessage() + "}");
                             objOs.writeObject(null);
                         } catch (ClassCastException e) {
-                            Server.log.warn("[Client-" + this.clientNum + "] Class Cast Exception! {" + e.getMessage() + "}");
+                            Server.log.warn("[Client-" + this.clientID + "] Class Cast Exception! {" + e.getMessage() + "}");
                             objOs.writeObject(null);
-                        } catch (Exception e) {
-                            Server.log.warn("[Client-" + this.clientNum + "] Unknown error occurred! {" + e.getMessage() + "}");
+                        } catch (NoResultException e) {
+                            Server.log.warn("[Client-" + this.clientID + "] No Result Exception! {" + e.getMessage() + "}");
+                            objOs.writeObject(null);
+                        }
+                    }
+
+                    //Merged Cases for Find Match, Find Match All Operations
+                    case "findMatch", "findMatchAll" -> {
+
+                        //Get all SQL conditions
+                        SQLCondBuilder[] conditions = (SQLCondBuilder[]) objIs.readObject();
+
+                        try {
+                            //Attempt to retrieve and return any matches
+                            switch (action) {
+                                case "findMatch" -> objOs.writeObject(findMatch(table, conditions));
+                                case "findMatchAll" -> objOs.writeObject(findMatchAll(table, conditions));
+                            }
+                        } catch (HibernateException e) {
+                            Server.log.warn("[Client-" + this.clientID + "] Hibernate Exception! {" + e.getMessage() + "}");
+                            objOs.writeObject(null);
+                        } catch (NoResultException e) {
+                            Server.log.warn("[Client-" + this.clientID + "] No Result Exception! {" + e.getMessage() + "}");
                             objOs.writeObject(null);
                         }
                     }
                 }
             } while (true);
         } catch (ClassNotFoundException e) {
-            Server.log.fatal("[Client-" + this.clientNum + "] Class Not Found Exception! {" + e.getMessage() + "}");
+            Server.log.fatal("[Client-" + this.clientID + "] Class Not Found Exception! {" + e.getMessage() + "}");
         } catch (InvalidClassException e) {
-            Server.log.fatal("[Client-" + this.clientNum + "] Invalid Class Exception! {" + e.getMessage() + "}");
+            Server.log.fatal("[Client-" + this.clientID + "] Invalid Class Exception! {" + e.getMessage() + "}");
         } catch (StreamCorruptedException e) {
-            Server.log.fatal("[Client-" + this.clientNum + "] Stream Corrupted Exception! {" + e.getMessage() + "}");
+            Server.log.fatal("[Client-" + this.clientID + "] Stream Corrupted Exception! {" + e.getMessage() + "}");
         } catch (OptionalDataException e) {
-            Server.log.fatal("[Client-" + this.clientNum + "] Optional Data Exception! {" + e.getMessage() + "}");
+            Server.log.fatal("[Client-" + this.clientID + "] Optional Data Exception! {" + e.getMessage() + "}");
         } catch (NotSerializableException e) {
-            Server.log.fatal("[Client-" + this.clientNum + "] Not Serializable Exception! {" + e.getMessage() + "}");
+            Server.log.fatal("[Client-" + this.clientID + "] Not Serializable Exception! {" + e.getMessage() + "}");
         } catch (EOFException e) {
-            Server.log.fatal("[Client-" + this.clientNum + "] End of File Exception! {" + e.getMessage() + "}");
+            Server.log.fatal("[Client-" + this.clientID + "] End of File Exception! {" + e.getMessage() + "}");
         } catch (IOException e) {
-            Server.log.fatal("[Client-" + this.clientNum + "] I/O Exception! {" + e.getMessage() + "}");
+            Server.log.fatal("[Client-" + this.clientID + "] I/O Exception! {" + e.getMessage() + "}");
         } catch (Exception e) {
-            Server.log.fatal("[Client-" + this.clientNum + "] Unknown error occurred! {" + e.getMessage() + "}");
+            Server.log.fatal("[Client-" + this.clientID + "] Unknown error occurred! {" + e.getMessage() + "}");
         }
 
         //Close the connection after fatal error

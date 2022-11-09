@@ -36,9 +36,12 @@ public class InvoiceItem implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Invoice invoice;
 
+    /**
+     * Default Constructor
+     */
     public InvoiceItem() {
         this.quantity = 0;
-        this.unitPrice = 0.0f;
+        this.unitPrice = 0.0d;
     }
 
     public InvoiceItem(int invID, String prodID, int quantity, double unitPrice) {

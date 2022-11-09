@@ -44,9 +44,9 @@ public class Date implements Serializable {
      * Default constructor for the date class
      */
     public Date() {
-        this.day = 1;
+        this.day = 0;
         this.month = 0;
-        this.year = 1970;
+        this.year = 0;
     }
 
     /**

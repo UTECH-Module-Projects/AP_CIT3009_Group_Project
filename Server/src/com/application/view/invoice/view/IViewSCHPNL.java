@@ -1,5 +1,6 @@
 package com.application.view.invoice.view;
 
+import com.application.view.ServerApp;
 import com.application.view.invoice.IViewPNL;
 import lombok.Getter;
 import net.miginfocom.swing.MigLayout;
@@ -36,7 +37,7 @@ public class IViewSCHPNL {
         phoneNumTXT = new JTextField();
         emailTXT = new JTextField();
 
-        clear = new JButton("Clear", new ImageIcon("src/com/application/view/images/icon_eraser.png"));
+        clear = new JButton("Clear", new ImageIcon(ServerApp.clearIMG));
     }
 
     private void addComponents() {

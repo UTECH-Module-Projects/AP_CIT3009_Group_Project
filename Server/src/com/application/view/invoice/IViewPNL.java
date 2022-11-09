@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class IViewPNL {
-    private IPNL ipnl;
+    private final IPNL ipnl;
     public JPanel pnl;
     public JTable tbl;
     public JScrollPane sPNE;

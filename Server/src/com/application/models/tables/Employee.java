@@ -40,6 +40,15 @@ public class Employee extends Person {
     private String depCode;
 
     /**
+     * Default Constructor
+     */
+    public Employee() {
+        super();
+        this.type = "";
+        this.depCode = "";
+    }
+
+    /**
      * Primary constructor for Employee
      * @param idNum
      * @param name

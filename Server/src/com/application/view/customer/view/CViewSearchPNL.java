@@ -1,5 +1,6 @@
 package com.application.view.customer.view;
 
+import com.application.view.ServerApp;
 import com.application.view.customer.CViewPNL;
 import lombok.Getter;
 import net.miginfocom.swing.MigLayout;
@@ -35,8 +36,8 @@ public class CViewSearchPNL {
         phoneNumTXT = new JTextField();
         emailTXT = new JTextField();
 
-        clear = new JButton("Clear", new ImageIcon("src/com/application/view/images/icon_eraser.png"));
-        refresh = new JButton("Refresh", new ImageIcon("src/com/application/view/images/icon_refresh.png"));
+        clear = new JButton("Clear", new ImageIcon(ServerApp.clearIMG));
+        refresh = new JButton("Refresh", new ImageIcon(ServerApp.refIMG));
     }
 
     private void addComponents() {

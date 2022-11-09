@@ -1,6 +1,7 @@
 package com.application.view.customer.view;
 
 import com.application.models.misc.Date;
+import com.application.view.ServerApp;
 import com.application.view.customer.CViewPNL;
 import net.miginfocom.swing.MigLayout;
 
@@ -18,7 +19,7 @@ public class CViewFormPNL {
 
     private JLabel idLBL, nameLBL, dobLBL, addressLBL, phoneNumLBL, emailLBL, memLBL;
     public JTextField idTXT, nameTXT, phoneNumTXT, emailTXT;
-    public JTextArea addressTA;
+    public JTextArea addressTXTA;
     public CViewFormDateCMB dob;
     public CViewFormMemBTN isMem;
 
@@ -47,12 +48,12 @@ public class CViewFormPNL {
         dob = new CViewFormDateCMB();
         emailTXT = new JTextField();
         phoneNumTXT = new JTextField();
-        addressTA = new JTextArea(5, 30);
+        addressTXTA = new JTextArea(5, 30);
         isMem = new CViewFormMemBTN();
 
-        save = new JButton("Save", new ImageIcon("src/com/application/view/images/icon_save.png"));
-        delete = new JButton("Delete", new ImageIcon("src/com/application/view/images/icon_delete.png"));
-        clear = new JButton("Clear", new ImageIcon("src/com/application/view/images/icon_eraser.png"));
+        save = new JButton("Save", new ImageIcon(ServerApp.saveIMG));
+        delete = new JButton("Delete", new ImageIcon(ServerApp.deleteIMG));
+        clear = new JButton("Clear", new ImageIcon(ServerApp.clearIMG));
 
         idTXT.setEnabled(false);
     }
@@ -71,7 +72,7 @@ public class CViewFormPNL {
         pnl.add(phoneNumLBL, "grow");
         pnl.add(phoneNumTXT, "grow, span 2, wrap");
         pnl.add(addressLBL, "grow");
-        pnl.add(addressTA, "grow, span 3, wrap");
+        pnl.add(addressTXTA, "grow, span 3, wrap");
         pnl.add(memLBL, "grow");
         pnl.add(isMem.yes, "grow");
         pnl.add(isMem.no, "grow, wrap");

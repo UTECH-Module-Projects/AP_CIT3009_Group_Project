@@ -13,6 +13,7 @@
 package com.application.view.invoice.view;
 
 import com.application.models.misc.Date;
+import com.application.view.ServerApp;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -50,9 +51,9 @@ public class IViewFormPNL {
         billDateTXT = new JTextField();
 //        empCMB = new JComboBox<>()
 
-        save = new JButton("Save", new ImageIcon("src/com/application/view/images/icon_save.png"));
-        delete = new JButton("Delete", new ImageIcon("src/com/application/view/images/icon_delete.png"));
-        clear = new JButton("Clear", new ImageIcon("src/com/application/view/images/icon_eraser.png"));
+        save = new JButton("Save", new ImageIcon(ServerApp.saveIMG));
+        delete = new JButton("Delete", new ImageIcon(ServerApp.deleteIMG));
+        clear = new JButton("Clear", new ImageIcon(ServerApp.clearIMG));
 
         idTXT.setEnabled(false);
     }

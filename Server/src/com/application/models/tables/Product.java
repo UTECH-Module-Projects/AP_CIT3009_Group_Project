@@ -37,7 +37,7 @@ public class Product implements Serializable {
     private double price;
 
     /**
-     * Default Constructor 
+     * Default Constructor
      */
     public Product() {
         this.idNum = "";
@@ -45,7 +45,7 @@ public class Product implements Serializable {
         this.shDesc = "";
         this.loDesc = "";
         this.stock = 0;
-        this.price = 0.0f;
+        this.price = 0.0d;
     }
 
     public Product(String idNum, String name, String shDesc, String loDesc, int stock, double price) {

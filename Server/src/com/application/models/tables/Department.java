@@ -48,6 +48,14 @@ public class Department implements Serializable {
     public final String name;
 
     /**
+     * Default Constructor
+     */
+    public Department() {
+        this.idNum = "";
+        this.name = "";
+    }
+
+    /**
      * Primary Constructor of the Department Class
      * @param idNum
      * @param name

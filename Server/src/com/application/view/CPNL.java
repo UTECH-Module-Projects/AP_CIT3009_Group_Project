@@ -12,7 +12,6 @@
  */
 package com.application.view;
 
-import com.application.view.AdminPage;
 import com.application.view.customer.CViewPNL;
 import lombok.Getter;
 import net.miginfocom.swing.MigLayout;
@@ -21,13 +20,13 @@ import javax.swing.*;
 
 @Getter
 public class CPNL {
-    private final AdminPage adminPage;
+    private final ServerApp serverApp;
     private JPanel pnl;
     private JTabbedPane tPNE;
     private CViewPNL view;
 
-    public CPNL(AdminPage adminPage) {
-        this.adminPage = adminPage;
+    public CPNL(ServerApp serverApp) {
+        this.serverApp = serverApp;
         initializeComponents();
         addComponents();
     }

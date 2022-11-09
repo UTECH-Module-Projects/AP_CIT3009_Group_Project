@@ -31,8 +31,8 @@ public class CViewPNL implements ActionListener {
     private void initializeComponents() {
         pnl = new JPanel(new MigLayout("fill, flowy, ins 13 10 0 10", "[nogrid][grow 0]", "[grow 0][]"));
 
-        custList = cpnl.getAdminPage().getClient().getAll("Customer").stream().map(obj -> (Customer) obj).toList();
-        tbl = new JTable(custList.stream().map(Customer::toArray).toList().toArray(new String[0][0]), Customer.fields);
+        custList = cpnl.getServerApp().getClient().getAll("Customer").stream().map(obj -> (Customer) obj).toList();
+        tbl = new JTable(custList.stream().map(Customer::toArray).toList().toArray(new String[0][0]), Customer.headers);
 
         sPNE = new JScrollPane(tbl);
         search = new CViewSearchPNL(this);

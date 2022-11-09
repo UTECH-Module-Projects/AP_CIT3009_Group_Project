@@ -62,6 +62,18 @@ public class Invoice implements Serializable {
     private final List<InvoiceItem> items = new ArrayList<>();
 
     /**
+     * Default Constructor
+     */
+    public Invoice() {
+        this.idNum = 0;
+        this.billDate = null;
+        this.empID = "";
+        this.custID = "";
+        this.discount = 0.0d;
+        this.total = 0.0d;
+    }
+
+    /**
      * Primary Constructor for Invoice
      * @param idNum
      * @param billDate

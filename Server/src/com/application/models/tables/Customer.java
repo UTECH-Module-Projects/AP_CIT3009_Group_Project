@@ -10,7 +10,11 @@
  * ~ Barrignton Patternson  2008034
  *
  */
+
+//Package
 package com.application.models.tables;
+
+//Imported Libraries
 
 import com.application.models.misc.Date;
 import com.application.models.misc.Person;
@@ -23,7 +27,7 @@ import lombok.Getter;
 /**
  * <h1>Customer Class</h1>
  * <p>
- * This is the Customer class
+ * This Class is designed to store the entity record of a Customer which is stored in the database.
  * </p>
  *
  * @author Gabrielle Johnson
@@ -31,83 +35,73 @@ import lombok.Getter;
  * @author Rushawn White
  * @author Barrignton Patternson
  * @version 1.0
- * */
+ */
 
 @Getter
 @Entity
 @Table(name = "Customer")
 public class Customer extends Person {
-    public static final String[] fields = {"ID Number", "Full Name", "Date of Birth", "Address", "Phone Number", "Email", "Date of Membership", "Date of Expiry"};
+    /**
+     * {@link String[]} Used to store the headers to be displayed in the customer table of the application
+     */
+    public static final String[] headers = {"ID Number", "Full Name", "Date of Birth", "Address", "Phone Number", "Email", "Date of Membership", "Date of Expiry"};
+    /**
+     * Used to store the length of an id number
+     */
     public static final int idLength = 8;
 
+    /**
+     * Stores whether the customer is a member
+     */
+    @Column(name = "isMem")
+    private boolean isMem;
+
+    /**
+     * {@link Date} Stores the Date of Membership
+     */
     @Column(name = "dom")
     private Date dom;
+
+    /**
+     * {@link Date} Stores the Date of Membership Expiry
+     */
     @Column(name = "dome")
     private Date dome;
 
     /**
-     * Default constructor for customer class
+     * Default Constructor
      */
     public Customer() {
         super();
+        this.isMem = false;
         this.dom = new Date();
         this.dome = new Date();
     }
 
     /**
-     * Primary Constructor for customer class
-     * @param idNum
-     * @param name
-     * @param dob
-     * @param address
-     * @param phoneNum
-     * @param email
-     * @param dom
-     * @param dome
+     * Primary Constructor - Used to store all data for the customer
+     *
+     * @param idNum The ID Number
+     * @param name The Full Name
+     * @param dob The Date of Birth
+     * @param address The Home Address
+     * @param phoneNum The Telephone Number
+     * @param email The Email Address
+     * @param isMem Whether the Customer is a Member
+     * @param dom The Date of Membership
+     * @param dome The Date of Membership Expiry
      */
-    public Customer(String idNum, String name, Date dob, String address, String phoneNum, String email, Date dom, Date dome) {
+    public Customer(String idNum, String name, Date dob, String address, String phoneNum, String email, boolean isMem, Date dom, Date dome) {
         super(idNum, name, dob, address, phoneNum, email);
+        this.isMem = isMem;
         this.dom = dom;
         this.dome = dome;
     }
 
-    public Customer(String idNum, String name, Date dob, String address, String phoneNum, String email) {
-        super(idNum, name, dob, address, phoneNum, email);
-        this.dom = null;
-        this.dome = null;
-    }
-
     /**
-     * Customer Copy constructors
-     * @param customer
-     */
-    public Customer(Customer customer) {
-        super(customer);
-        this.dom = new Date(customer.getDom());
-        this.dome = new Date(customer.getDome());
-    }
-
-    /**
-     * Convert customer Object to string
-     * @return
-     */
-    @Override
-    public String toString() {
-        return "Customer{" +
-                "idNum = '" + idNum + '\'' +
-                ", dom = " + dom +
-                ", dome = " + dome +
-                ", name = '" + name + '\'' +
-                ", dob = " + dob +
-                ", address = '" + address + '\'' +
-                ", phoneNum = '" + phoneNum + '\'' +
-                ", email = '" + email + '\'' +
-                '}';
-    }
-
-    /**
-     * adds Customer an array
-     * @return
+     * Converts Customer Object to a String Array Format for Table Printing
+     *
+     * @return The customer object in string array format
      */
     public String[] toArray() {
         return new String[]{idNum, name, Utilities.checkNull(dob), address, phoneNum, email, Utilities.checkNull(dom), Utilities.checkNull(dome)};

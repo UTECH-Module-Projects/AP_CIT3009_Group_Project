@@ -16,9 +16,9 @@ package com.database.server;
 
 //Imported Libraries
 
-import com.application.dao.generic.GenericJPADAO;
+import com.application.generic.GenericJPADAO;
 import com.application.models.tables.*;
-import com.application.view.AdminPage;
+import com.application.view.ServerApp;
 import com.database.session.SessionFactoryBuilder;
 import jakarta.persistence.EntityManager;
 import org.hibernate.HibernateException;
@@ -40,9 +40,9 @@ import org.apache.logging.log4j.Logger;
 /**
  * <h1>Server Application Class</h1>
  * <p>
- * This Class is designed to initialize the root server for the Server Client Architecture.
- * Multiple Clients may connect to the Server using Threads. Requests may be sent through sockets
- * and the Server executes these requests and returns appropriate responses.
+ *     This Class is designed to initialize the root server for the Server Client Architecture.
+ *     Multiple Clients may connect to the Server using Threads. Requests may be sent through sockets
+ *     and the Server executes these requests and returns appropriate responses.
  * </p>
  *
  * @author Gabrielle Johnson
@@ -89,7 +89,7 @@ public class Server {
     /**
      * The Path for the boot file
      */
-    private static final String bootPath = "src/com/database/properties/boot/boot.txt";
+    private static final String bootPath = "Server/src/com/database/boot/boot.txt";
 
     /**
      * {@link Logger} - Used to log all activities during the session
@@ -236,13 +236,13 @@ public class Server {
      */
     private void waitForRequests() throws RuntimeException {
         //Generate Admin Page
-        AdminPage adminPage = new AdminPage();
-        adminPage.start();
+        ServerApp serverApp = new ServerApp();
+        serverApp.start();
 
         do {
             try {
                 //Create new Thread to communicate with Client
-                ServerThread thread = new ServerThread(ss.accept(), ++clientCount);
+                ServerThread thread = new ServerThread(ss.accept());
                 thread.start();
                 log.trace("New Client has connected. Total: " + ++totClients);
             } catch (SecurityException e) {
@@ -255,7 +255,7 @@ public class Server {
                 log.fatal("I/O Exception! {" + e.getMessage() + "}");
                 throw new RuntimeException(e);
             }
-        } while (!adminPage.isClosed());
+        } while (!serverApp.isClosed());
 
         //End Connection When Admin Page is closed
         closeConnection();

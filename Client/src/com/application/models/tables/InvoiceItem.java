@@ -1,3 +1,15 @@
+/*
+ * Advance Programming Group Project
+ * Date of Submission: 11/11/2022
+ * Lab Supervisor: Christopher Panther
+ *
+ * Group Members:-
+ * ~ Gabrielle Johnson      2005322
+ * ~ Jazmin Hayles          2006754
+ * ~ Rushawn White          2002469
+ * ~ Barrignton Patterson  2008034
+ *
+ */
 package com.application.models.tables;
 
 import com.application.models.converters.InvoiceItemID;
@@ -24,9 +36,12 @@ public class InvoiceItem implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Invoice invoice;
 
+    /**
+     * Default Constructor
+     */
     public InvoiceItem() {
         this.quantity = 0;
-        this.unitPrice = 0.0f;
+        this.unitPrice = 0.0d;
     }
 
     public InvoiceItem(int invID, String prodID, int quantity, double unitPrice) {

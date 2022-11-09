@@ -11,11 +11,13 @@
  *
  */
 
+//Package
 package com.application.utilities;
+
 /**
  * <h1>Utilities Class</h1>
  * <p>
- * This Class is designed to generate unique iDs for the database
+ * This Class is designed to perform generic data operations such as generating unique value, checking if a value is unique, and checking if a value is null.
  * </p>
  *
  * @author Gabrielle Johnson
@@ -27,53 +29,62 @@ package com.application.utilities;
 public class Utilities {
 
     /**
-     *  With this, a random integer is created for the special Id.
-     * @param ids
-     * @param length
-     * @return
+     * Generates a random unique Integer using an array of Integers.
+     * @param arr The array of integers to test
+     * @param len The length that the integer should be
+     * @return The unique integer
      */
-    public static int generateUniqueIDInt(Integer[] ids, int length) {
-        if (length < 1) return 0;
+    public static int generateUniqueInt(Integer[] arr, int len) {
+        //If the length is invalid
+        if (len < 1 || len > String.valueOf(Integer.MAX_VALUE).length()) return 0;
+
+        //Indefinite loop until integer is unique
         do {
-            int id = (int) (Math.random() * (Math.pow(10, length) - Math.pow(10, length-1)) + Math.pow(10, length-1));;
-            if (isUniqueInt(ids, id)) return id;
+            //Generates a random integer between 10^(len-1) and 10^(len)-1
+            int val = (int) (Math.random() * (Math.pow(10, len) - Math.pow(10, len-1)) + Math.pow(10, len-1));
+
+            //If the integer is unique
+            if (isUniqueInt(arr, val)) return val;
         } while (true);
     }
 
     /**
-     *  Generate the random ID number
-     * @param ids 
-     * @param length
-     * @return
+     * Generates a random unique String using an array of Strings.
+     * @param arr The array of strings to test
+     * @param len The length that the strings should be
+     * @return The unique strings
      */
-    public static String generateUniqueIDString(String[] ids, int length) {
+    public static String generateUniqueIDString(String[] arr, int len) {
+        //The string of all valid characters the string may have
         String validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 + "abcdefghijklmnopqrstuvwxyz"
                 + "1234567890";
-        System.out.println("Hello :C");
 
-        if (length < 1) return "";
+        //If the length is invalid
+        if (len < 1) return "";
 
+        //Indefinite loop until string is unique
         do {
             StringBuilder str = new StringBuilder();
-            for (int i = 0; i < length; i++)
+
+            //Get len number of random characters and store them in a string
+            for (int i = 0; i < len; i++)
                 str.append(validChars.charAt((int) (validChars.length() * Math.random())));
-            if (isUniqueString(ids, str.toString())) {
-                System.out.println(str);
-                return str.toString();
-            }
+
+            //If the string is unique
+            if (isUniqueString(arr, str.toString())) return str.toString();
         } while (true);
     }
 
     /**
-     *  Checks if String is Unique
-     * @param ids
-     * @param key
-     * @return
+     * Checks if a String is unique using a list of Strings
+     * @param arr The array of strings to test
+     * @param str The string to test
+     * @return Whether the string is unique (true or false)
      */
-    public static boolean isUniqueString(String[] ids, String key) {
-        for (String id : ids)
-            if (id.equals(key)) return false;
+    public static boolean isUniqueString(String[] arr, String str) {
+        for (String id : arr)
+            if (id.equals(str)) return false;
         return true;
     }
 
@@ -83,16 +94,16 @@ public class Utilities {
      * @param key
      * @return
      */
-    public static boolean isUniqueInt(Integer[] ids, int key) {
-        for (int id : ids)
-            if (id == key) return false;
+    public static boolean isUniqueInt(Integer[] arr, int val) {
+        for (int id : arr)
+            if (id == val) return false;
         return true;
     }
 
     /**
-     * Checks if Object is null
-     * @param obj
-     * @return
+     * Checks if an Object is null
+     * @param obj The object to test
+     * @return Whether the object is null (true or false)
      */
     public static String checkNull(Object obj) {
         return (obj == null) ? "null" : obj.toString();

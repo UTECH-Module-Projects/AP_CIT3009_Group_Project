@@ -10,9 +10,25 @@
  * ~ Barrignton Patternson  2008034
  *
  */
+
+//Package
 package com.application.controller;
+
+//Imported Libraries
 import com.database.server.Server;
 
+/**
+ * <h1>Main Driver Class</h1>
+ * <p>
+ *     This Class is designed create and run the server
+ * </p>
+ *
+ * @author Gabrielle Johnson
+ * @author Jazmin Hayles
+ * @author Rushawn White
+ * @author Barrignton Patterson
+ * @version 1.0
+ */
 public class Driver {
     public static void main(String[] args) {
         try {
