@@ -48,7 +48,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     // product Initialization
     prodtemp = new Product();
     table2= new Table(modeldaList());
-    table3= new Table(modeldaList());
+    table3= new Table(dataProducts);
 
 
     // border settings
@@ -131,9 +131,9 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     tabsPaneLeft.add("Cashier", cashierPanel);
     tabsPaneLeft.add("Inventory", inventoryPanel);
     tabsPaneTop.add("Products List", productPanel);
-    tabsPaneTop.add("Cart",cartPanel);
+    tabsPaneTop.add("Cart", cartPanel);
     //Panels 
-    cartPanel.add(table3.initializeComponents());
+    cartPanel.add(table3.getTable());
     cashierPanel.add(tabsPaneTop);
 
 
@@ -243,6 +243,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
         JOptionPane.showMessageDialog(this, "The Shoping Cart is Empty Please add Items to cart", "Notice",
             JOptionPane.INFORMATION_MESSAGE);
       } else {
+        table3.getModel().setValueAt(dataProducts,0,0);
          tabsPaneTop.setSelectedIndex(1);
 //        new Chart(dataProducts);
       }

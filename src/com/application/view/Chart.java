@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.io.Serial;
 import java.util.List;
 
 import javax.swing.table.*;
@@ -41,7 +42,7 @@ public class Chart extends JFrame implements ListSelectionListener {
         mainPanel=new JPanel();
         mainPanel.setLayout(new MigLayout());
         // Button creation
-        b1 = new JButton("Add to Cart");
+        b1 = new JButton("Remove Item");
         b1.setBounds(50, 100, 80, 30);
         b1.setBackground(Color.gray);
 
@@ -80,10 +81,10 @@ public class Chart extends JFrame implements ListSelectionListener {
         panel.add(txtLongDescription, "wrap");
         panel.add(b1);
 
-        mainPanel.add(scroll);
-        mainPanel.add(panel,"wrap");
+        mainPanel.add(scroll,"wrap");
+        mainPanel.add(panel);
 
-        return panel;
+        return mainPanel;
     }
 
     public void tableCreation(List<Product> data) {
@@ -96,6 +97,7 @@ public class Chart extends JFrame implements ListSelectionListener {
 
         // set the TableModel to get data from JTable
         TableModel model = new AbstractTableModel() {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             public int getColumnCount() {
