@@ -16,6 +16,7 @@ import javax.swing.event.*;
 public class Chart extends JFrame implements ListSelectionListener {
     private JTable table;
     private JPanel panel;
+    private  JPanel mainPanel;
     private JLabel lblCost;
     private JLabel lblTitle;
     private JLabel lblProductName;
@@ -37,7 +38,8 @@ public class Chart extends JFrame implements ListSelectionListener {
         panel.setLayout(new MigLayout());
         panel.setVisible(true);
         panel.setBorder(panelBorder);
-
+        mainPanel=new JPanel();
+        mainPanel.setLayout(new MigLayout());
         // Button creation
         b1 = new JButton("Add to Cart");
         b1.setBounds(50, 100, 80, 30);
@@ -67,7 +69,7 @@ public class Chart extends JFrame implements ListSelectionListener {
 
     }
 
-    public void addComponentsToPanel() {
+    public JPanel addComponentsToPanel() {
         // Add components to Panel
         panel.add(lblTitle, "grow,span,wrap");
         panel.add(lblProductName);
@@ -77,6 +79,11 @@ public class Chart extends JFrame implements ListSelectionListener {
         panel.add(lblLongDescription, "wrap");
         panel.add(txtLongDescription, "wrap");
         panel.add(b1);
+
+        mainPanel.add(scroll);
+        mainPanel.add(panel,"wrap");
+
+        return panel;
     }
 
     public void tableCreation(List<Product> data) {
@@ -142,24 +149,24 @@ public class Chart extends JFrame implements ListSelectionListener {
         listModel.addListSelectionListener(this);
     }
 
-    public void addPanelsToWindow() {
-        this.getContentPane().add(scroll, "wrap");
-        this.add(panel);
-    }
+//    public void addPanelsToWindow() {
+//        this.getContentPane().add(scroll, "wrap");
+//        this.add(panel);
+//    }
 
-    public void setWindowProperties() {
-        this.setSize(500, 500);
-        this.setVisible(true);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    }
+//    public void setWindowProperties() {
+//        this.setSize(500, 500);
+//        this.setVisible(true);
+//        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//    }
 
     public Chart(List<Product> data) {
         this.setLayout(new MigLayout());
         tableCreation(data);
         initializeComponents();
         addComponentsToPanel();
-        addPanelsToWindow();
-        setWindowProperties();
+//        addPanelsToWindow();
+//        setWindowProperties();
 
     }
 

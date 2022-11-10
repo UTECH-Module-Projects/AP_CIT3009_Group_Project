@@ -52,12 +52,13 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
 
 
     // border settings
-    // panelBorder = new LineBorder(Color.BLACK, 2, true);
+     panelBorder = new LineBorder(Color.BLACK, 2, true);
 
     //tabs settings
     tabsPaneLeft= new JTabbedPane(JTabbedPane.LEFT);
     tabsPaneTop= new JTabbedPane();
-    
+//    tabsPaneTop.setLayout(new MigLayout("insets 0","[][]",""));
+//    tabsPaneLeft.setLayout(new MigLayout("insets 0","[][]",""));
 
     // Panel Settings
     productPanel = new JPanel();
@@ -100,6 +101,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     txtCostDisplay.setDisabledTextColor(Color.black);
     txtProductNameDisplay.setDisabledTextColor(Color.black);
     txtLongDescription.setDisabledTextColor(Color.black);
+    txtLongDescription.setBorder(panelBorder);
 
     // title set up
     lblTitle.setBackground(Color.BLUE);
@@ -129,7 +131,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
     tabsPaneLeft.add("Cashier", cashierPanel);
     tabsPaneLeft.add("Inventory", inventoryPanel);
     tabsPaneTop.add("Products List", productPanel);
-    tabsPaneTop.add("Cart", cartPanel);
+    tabsPaneTop.add("Cart",cartPanel);
     //Panels 
     cartPanel.add(table3.initializeComponents());
     cashierPanel.add(tabsPaneTop);
@@ -165,7 +167,7 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
  
   public void setWindowProperties() {
     this.setTitle("Jan’s Wholesale and Retail");
-    this.setSize(500, 500);
+    this.setSize(800, 900);
     this.setVisible(true);
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
@@ -241,8 +243,8 @@ public class Checkout extends JFrame implements ListSelectionListener, ActionLis
         JOptionPane.showMessageDialog(this, "The Shoping Cart is Empty Please add Items to cart", "Notice",
             JOptionPane.INFORMATION_MESSAGE);
       } else {
-        // tabsPane.setSelectedIndex(1);
-        new Chart(dataProducts);
+         tabsPaneTop.setSelectedIndex(1);
+//        new Chart(dataProducts);
       }
     }
   }
