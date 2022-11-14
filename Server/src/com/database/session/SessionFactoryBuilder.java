@@ -16,6 +16,7 @@ package com.database.session;
 
 //Imported Libraries
 
+import com.application.models.converters.TimeConverter;
 import com.application.models.tables.*;
 import com.application.models.converters.DateConverter;
 import com.application.models.misc.Person;
@@ -50,8 +51,10 @@ public class SessionFactoryBuilder {
                 .addAnnotatedClass(Invoice.class)
                 .addAnnotatedClass(InvoiceItem.class)
                 .addAnnotatedClass(Product.class)
+                .addAnnotatedClass(Log.class)
                 .addAnnotatedClass(Person.class)
                 .addAnnotatedClass(DateConverter.class)
+                .addAnnotatedClass(TimeConverter.class)
                 .buildSessionFactory();
     }
 }

@@ -13,7 +13,7 @@
 
 package com.application.models.converters;
 
-import com.application.models.misc.Date;
+import com.application.models.misc.EntityDate;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 /**
@@ -29,28 +29,28 @@ import jakarta.persistence.Converter;
  * @version 1.0
  * */
 @Converter (autoApply = true)
-public class DateConverter implements AttributeConverter<Date, String> {
+public class DateConverter implements AttributeConverter<EntityDate, String> {
     /**
-     * Converts date to sql Date to be stored in the database
-     * @param date
-     * @return
+     * The Date Object Converted to SQL Date String
+     *
+     * @param entityDate The Date object
+     * @return The date object converted to sql date string
      */
     @Override
-    public String convertToDatabaseColumn(Date date) {
-        if (date == null) return null;
-        return date.toSQLDate();
+    public String convertToDatabaseColumn(EntityDate entityDate) {
+        if (entityDate == null) return null;
+        return entityDate.toString();
     }
 
     /**
-     *transforms the date obtained from the database into our own data format.
-     * @param s
-     * @return
+     * The SQL Date String converted to Date Object
+     *
+     * @param s The SQL Date String
+     * @return The sql date String converted to date object
      */
     @Override
-    public Date convertToEntityAttribute(String s) {
+    public EntityDate convertToEntityAttribute(String s) {
         if (s == null) return null;
-        String[] date = s.split("-");
-
-        return new Date(Integer.parseInt(date[2]), Integer.parseInt(date[1]), Integer.parseInt(date[0]));
+        return new EntityDate(s.split("-"));
     }
 }

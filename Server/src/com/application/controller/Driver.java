@@ -15,12 +15,13 @@
 package com.application.controller;
 
 //Imported Libraries
+
 import com.database.server.Server;
 
 /**
  * <h1>Main Driver Class</h1>
  * <p>
- *     This Class is designed create and run the server
+ * This Class is designed create and run the server
  * </p>
  *
  * @author Gabrielle Johnson

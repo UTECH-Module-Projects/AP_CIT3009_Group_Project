@@ -1,17 +1,37 @@
 package com.application.view.customer.view;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class CViewFormMemBTN {
-    public JRadioButton yes;
-    public JRadioButton no;
-    ButtonGroup grp;
+@Getter
+@Setter
+public class CViewFormMemBTN implements ChangeListener {
+    private JRadioButton yes;
+    private JRadioButton no;
+    private ButtonGroup grp;
+    private CViewFormPNL cViewFormPNL;
 
-    public CViewFormMemBTN() {
+    /**
+     * Primary Constructor
+     * Customer Form View for Members
+     * @param cViewFormPNL
+     */
+    public CViewFormMemBTN(CViewFormPNL cViewFormPNL) {
+        this.cViewFormPNL = cViewFormPNL;
         initializeComponents();
+        setProperties();
     }
 
-    public void initializeComponents() {
+    /**
+     * initializes components to go form panel
+     */
+    private void initializeComponents() {
         yes = new JRadioButton("Yes");
         no = new JRadioButton("No");
 
@@ -19,5 +39,33 @@ public class CViewFormMemBTN {
         grp.add(yes);
         grp.add(no);
         no.setSelected(true);
+    }
+
+    /**
+     * Adding Listeners to the radio buttons
+     */
+    private void setProperties() {
+        yes.addChangeListener(this);
+        no.addChangeListener(this);
+    }
+
+    /**
+     * Listens for state change of the radio buttons
+     * state determines visibility of the panel
+     * @param e  a ChangeEvent object
+     */
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if (yes.isSelected()) {
+            cViewFormPNL.getDomLBL().setVisible(true);
+            cViewFormPNL.getDom().getDate().setVisible(true);
+            cViewFormPNL.getDomeLBL().setVisible(true);
+            cViewFormPNL.getDome().getDate().setVisible(true);
+        } else {
+            cViewFormPNL.getDomLBL().setVisible(false);
+            cViewFormPNL.getDom().getDate().setVisible(false);
+            cViewFormPNL.getDomeLBL().setVisible(false);
+            cViewFormPNL.getDome().getDate().setVisible(false);
+        }
     }
 }

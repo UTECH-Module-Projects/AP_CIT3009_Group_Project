@@ -1,7 +1,11 @@
 package com.application.view.invoice.view;
 
+import com.application.generic.TableList;
+import com.application.models.tables.Invoice;
 import com.application.view.ServerApp;
 import com.application.view.invoice.IViewPNL;
+import com.database.server.Client;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import net.miginfocom.swing.MigLayout;
 
@@ -11,13 +15,20 @@ import javax.swing.border.TitledBorder;
 @Getter
 public class IViewSCHPNL {
     private final IViewPNL iViewPNL;
+    private final Client client;
     private JPanel pnl;
     private JLabel idLBL, nameLBL, addressLBL, phoneNumLBL, emailLBL;
     public JTextField idTXT, nameTXT, addressTXT, phoneNumTXT, emailTXT;
     public JButton clear;
 
-    public IViewSCHPNL(IViewPNL iViewPNL) {
+    /**
+     * Primary Constructor
+     * @param iViewPNL
+     * @param client
+     */
+    public IViewSCHPNL(IViewPNL iViewPNL, Client client) {
         this.iViewPNL = iViewPNL;
+        this.client = client;
         initializeComponents();
         addComponents();
         setProperties();

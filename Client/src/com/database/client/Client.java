@@ -18,12 +18,13 @@ package com.database.client;
 
 import com.application.generic.SQLCondBuilder;
 import lombok.Getter;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <h1>Client Application Class</h1>
@@ -43,7 +44,8 @@ public class Client {
     /**
      * {@link String} - The ID Number of the client
      */
-    private String id;
+    @Getter
+    private final String id;
     /**
      * {@link Socket} - Connection Socket for the Client
      */
@@ -85,7 +87,7 @@ public class Client {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        log.trace("[Client-" + id + "] Socket Established.");
+        log.trace("[Client-" + this.id + "] Socket Established.");
     }
 
     /**
@@ -98,9 +100,9 @@ public class Client {
             objOs = new ObjectOutputStream(cs.getOutputStream());
             objIs = new ObjectInputStream(cs.getInputStream());
             objOs.writeObject(id);
-            log.trace("[Client-" + id + "] Object Streams Initialized.");
+            log.trace("[Client-" + this.id + "] Object Streams Initialized.");
         } catch (IOException e) {
-            log.fatal("[Client-" + id + "] I/O Exception! {" + e.getMessage() + "}");
+            log.fatal("[Client-" + this.id + "] I/O Exception! {" + e.getMessage() + "}");
             throw new RuntimeException(e);
         }
     }
@@ -116,9 +118,75 @@ public class Client {
             objOs.close();
             objIs.close();
             cs.close();
-            log.trace("[Client-" + id + "] Connections to Server closed.");
+            log.trace("[Client-" + this.id + "] Connections to Server closed.");
         } catch (IOException e) {
-            log.fatal("[Client-" + id + "] I/O Exception! {" + e.getMessage() + "}");
+            log.fatal("[Client-" + this.id + "] I/O Exception! {" + e.getMessage() + "}");
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void start(String action, String table, Object obj) throws RuntimeException {
+        try {
+            //Send required data for operation
+            objOs.writeObject(action);
+            objOs.writeObject(table);
+            if (obj != null)
+                objOs.writeObject(obj);
+        } catch (InvalidClassException e) {
+            log(Level.FATAL, "Invalid Class Exception!", e);
+            throw new RuntimeException(e);
+        } catch (NotSerializableException e) {
+            log(Level.FATAL, "Not Serializable Exception!", e);
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            log(Level.FATAL, "I/O Exception!", e);
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            log(Level.FATAL, "Unknown Exception!", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object returnObject(String action, String table) throws RuntimeException {
+        try {
+            log(Level.TRACE, action + " operation performed on " + table + ".");
+
+            return objIs.readObject();
+        } catch (InvalidClassException e) {
+            log(Level.FATAL, "Invalid Class Exception!", e);
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            log(Level.FATAL, "Class Not Found Exception!", e);
+            throw new RuntimeException(e);
+        } catch (StreamCorruptedException e) {
+            log(Level.FATAL, "Stream Corrupted Exception!", e);
+            throw new RuntimeException(e);
+        } catch (OptionalDataException e) {
+            log(Level.FATAL, "Optional Data Exception!", e);
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            log(Level.FATAL, "I/O Exception!", e);
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            log(Level.FATAL, "Unknown Exception!", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Object> returnList(String action, String table) throws RuntimeException {
+        try {
+            log(Level.TRACE, action + " operation performed on " + table + ".");
+
+            return (List<Object>) objIs.readObject();
+        } catch (ClassNotFoundException e) {
+            log.fatal("[Client-" + this.id + "] Class Not Found Exception! {" + e.getMessage() + "}");
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            log.fatal("[Client-" + this.id + "] I/O Exception! {" + e.getMessage() + "}");
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            log(Level.FATAL, "Unknown Exception!", e);
             throw new RuntimeException(e);
         }
     }
@@ -132,29 +200,9 @@ public class Client {
      * @return Whether the operation was successful (true or false)
      * @throws RuntimeException If any fatal errors occur when attempting to performing the operation
      */
-    public boolean cud(String action, String table, Object entity) throws RuntimeException {
-        try {
-            //Send required data for operation
-            objOs.writeObject(action);
-            objOs.writeObject(table);
-            objOs.writeObject(entity);
-            log.info("[Client-" + id + "] '" + action + "' operation performed on " + table + " table.");
-
-            //Return result of operation (true or false)
-            return (Boolean) objIs.readObject();
-        } catch (InvalidClassException e) {
-            log.fatal("[Client-" + id + "] Invalid Class Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (NotSerializableException e) {
-            log.fatal("[Client-" + id + "] Not Serializable Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            log.fatal("[Client-" + id + "] Class Not Found Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            log.fatal("[Client-" + id + "] I/O Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        }
+    public Object cud(String action, String table, Object entity) throws RuntimeException {
+        start(action, table, entity);
+        return returnObject(action, table);
     }
 
     /**
@@ -166,28 +214,8 @@ public class Client {
      * @throws RuntimeException If any fatal errors occur when attempting to performing the operation
      */
     public Object get(String table, Object id) throws RuntimeException {
-        try {
-            //Send required data for operation
-            objOs.writeObject("get");
-            objOs.writeObject(table);
-            objOs.writeObject(id);
-            log.info("[Client-" + id + "] 'get' operation performed on " + table + " (" + id + ").");
-
-            //Return result of operation (entity record)
-            return objIs.readObject();
-        } catch (InvalidClassException e) {
-            log.fatal("[Client-" + id + "] Invalid Class Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (NotSerializableException e) {
-            log.fatal("[Client-" + id + "] Not Serializable Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            log.fatal("[Client-" + id + "] Class Not Found Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            log.fatal("[Client-" + id + "] I/O Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        }
+        start("get", table, id);
+        return returnObject("get", table);
     }
 
     /**
@@ -198,30 +226,9 @@ public class Client {
      * @return A list containing the specified data for a column
      * @throws RuntimeException If any fatal errors occur when attempting to performing the operation
      */
-    @SuppressWarnings("unchecked")
-    public ArrayList<Object> getColumn(String table, String field) throws RuntimeException {
-        try {
-            //Send required data for operation
-            objOs.writeObject("getColumn");
-            objOs.writeObject(table);
-            objOs.writeObject(field);
-            log.info("[Client-" + id + "] getColumn operation performed on " + table + " (" + field + ").");
-
-            //Return result of operation (list of column data)
-            return (ArrayList<Object>) objIs.readObject();
-        } catch (InvalidClassException e) {
-            log.fatal("[Client-" + id + "] Invalid Class Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (NotSerializableException e) {
-            log.fatal("[Client-" + id + "] Not Serializable Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            log.fatal("[Client-" + id + "] Class Not Found Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            log.fatal("[Client-" + id + "] I/O Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        }
+    public List<Object> getColumn(String table, String field) throws RuntimeException {
+        start("getColumn", table, field);
+        return returnList("getColumn", table);
     }
 
     /**
@@ -231,29 +238,9 @@ public class Client {
      * @return A list of entity records retrieved from the table
      * @throws RuntimeException If any fatal errors occur when attempting to performing the operation
      */
-    @SuppressWarnings("unchecked")
-    public ArrayList<Object> getAll(String table) throws RuntimeException {
-        try {
-            //Send required data for operation
-            objOs.writeObject("getAll");
-            objOs.writeObject(table);
-            log.info("[Client-" + id + "] getAll operation performed on " + table + ".");
-
-            //Return result of operation (list of all entity records)
-            return (ArrayList<Object>) objIs.readObject();
-        } catch (InvalidClassException e) {
-            log.fatal("[Client-" + id + "] Invalid Class Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (NotSerializableException e) {
-            log.fatal("[Client-" + id + "] Not Serializable Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            log.fatal("[Client-" + id + "] Class Not Found Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            log.fatal("[Client-" + id + "] I/O Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        }
+    public List<Object> getAll(String table) throws RuntimeException {
+        start("getAll", table, null);
+        return returnList("getAll", table);
     }
 
     /**
@@ -265,28 +252,8 @@ public class Client {
      * @throws RuntimeException If any fatal errors occur when attempting to performing the operation
      */
     public Object genID(String table, int length) throws RuntimeException {
-        try {
-            //Send required data for operation
-            objOs.writeObject("genID");
-            objOs.writeObject(table);
-            objOs.writeObject(length);
-            log.info("[Client-" + id + "] genID operation performed on " + table + ".");
-
-            //Return result of operation (unique id number)
-            return objIs.readObject();
-        } catch (InvalidClassException e) {
-            log.fatal("[Client-" + id + "] Invalid Class Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (NotSerializableException e) {
-            log.fatal("[Client-" + id + "] Not Serializable Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            log.fatal("[Client-" + id + "] Class Not Found Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            log.fatal("[Client-" + id + "] I/O Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        }
+        start("genID", table, length);
+        return returnObject("genID", table);
     }
 
     /**
@@ -298,28 +265,8 @@ public class Client {
      * @throws RuntimeException If any fatal errors occur when attempting to performing the operation
      */
     public Object findMatch(String table, SQLCondBuilder...conditions) throws RuntimeException {
-        try {
-            //Send required data for operation
-            objOs.writeObject("findMatch");
-            objOs.writeObject(table);
-            objOs.writeObject(conditions);
-            log.info("[Client-" + id + "] findMatch operation performed on " + table + ".");
-
-            //Return result of operation (entity record)
-            return objIs.readObject();
-        } catch (InvalidClassException e) {
-            log.fatal("[Client-" + id + "] Invalid Class Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (NotSerializableException e) {
-            log.fatal("[Client-" + id + "] Not Serializable Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            log.fatal("[Client-" + id + "] Class Not Found Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            log.fatal("[Client-" + id + "] I/O Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        }
+        start("findMatch", table, conditions);
+        return returnObject("findMatch", table);
     }
 
     /**
@@ -330,29 +277,16 @@ public class Client {
      * @return All entity records which match the condition
      * @throws RuntimeException If any fatal errors occur when attempting to performing the operation
      */
-    @SuppressWarnings("unchecked")
-    public ArrayList<Object> findMatchAll(String table, SQLCondBuilder...conditions) throws RuntimeException {
-        try {
-            //Send required data for operation
-            objOs.writeObject("findMatchAll");
-            objOs.writeObject(table);
-            objOs.writeObject(conditions);
-            log.info("[Client-" + id + "] findMatch operation performed on " + table + ".");
+    public List<Object> findMatchAll(String table, SQLCondBuilder...conditions) throws RuntimeException {
+        start("findMatchAll", table, conditions);
+        return returnList("findMatchAll", table);
+    }
 
-            //Return result of operation (list of entity records)
-            return (ArrayList<Object>) objIs.readObject();
-        } catch (InvalidClassException e) {
-            log.fatal("[Client-" + id + "] Invalid Class Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (NotSerializableException e) {
-            log.fatal("[Client-" + id + "] Not Serializable Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            log.fatal("[Client-" + id + "] Class Not Found Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            log.fatal("[Client-" + id + "] I/O Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        }
+    public void log(Level level, String msg) {
+        log.log(level, "[Client-" + id + "] " + msg);
+    }
+
+    public void log(Level level, String msg, Exception ex) {
+        log.log(level, "[Client-" + id + "] " + msg + " {" + ex.getMessage() + "}");
     }
 }

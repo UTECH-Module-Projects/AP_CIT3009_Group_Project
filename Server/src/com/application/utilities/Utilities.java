@@ -108,4 +108,15 @@ public class Utilities {
     public static String checkNull(Object obj) {
         return (obj == null) ? "null" : obj.toString();
     }
+
+    /**
+     * Checks if an Object is considered "Empty"
+     * @param obj The object to test
+     * @return Whether the object is empty (true or false)
+     */
+    public static boolean isEmpty(Object ...obj) {
+        for (Object o : obj)
+            if (o == null || o.equals("") || o.equals(0) || o.equals(0.0f) || o.equals(0.0d)) return true;
+        return false;
+    }
 }

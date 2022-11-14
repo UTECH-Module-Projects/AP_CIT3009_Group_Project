@@ -10,7 +10,11 @@
  * ~ Barrignton Patternson  2008034
  *
  */
+
+//Package
 package com.application.generic;
+
+//Imported Libraries
 
 import java.io.Serializable;
 import java.util.List;

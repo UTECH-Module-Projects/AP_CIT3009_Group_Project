@@ -12,7 +12,7 @@
  */
 package com.application.view.invoice.view;
 
-import com.application.models.misc.Date;
+import com.application.models.misc.EntityDate;
 import com.application.view.ServerApp;
 import net.miginfocom.swing.MigLayout;
 
@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 
 public class IViewFormPNL {
     public static final Integer[] days = IntStream.rangeClosed(1, 31).boxed().toArray(Integer[]::new);
-    public static final String[] months = Date.Months;
+    public static final String[] months = EntityDate.Months;
     public static final Integer[] years = IntStream.rangeClosed(Year.now().getValue()-150, Year.now().getValue()).boxed().toArray(Integer[]::new);
 
     public JPanel pnl;

@@ -13,7 +13,9 @@
 package com.application.view;
 
 import com.application.view.customer.CViewPNL;
+import com.database.server.Client;
 import lombok.Getter;
+import lombok.Setter;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -21,12 +23,15 @@ import javax.swing.*;
 @Getter
 public class CPNL {
     private final ServerApp serverApp;
+    private final Client client;
+    @Setter
     private JPanel pnl;
     private JTabbedPane tPNE;
     private CViewPNL view;
 
-    public CPNL(ServerApp serverApp) {
+    public CPNL(ServerApp serverApp, Client client) {
         this.serverApp = serverApp;
+        this.client = client;
         initializeComponents();
         addComponents();
     }
@@ -35,12 +40,13 @@ public class CPNL {
         pnl = new JPanel(new MigLayout("fill"));
         tPNE = new JTabbedPane();
 
-        view = new CViewPNL(this);
+        view = new CViewPNL("Manage Customers", this, client);
     }
 
     private void addComponents() {
-        tPNE.add("View Customer", view.getPnl());
-//        tPNE.add("Add Customer", add.pnl);
+        tPNE.add(view.getTitle(), view.getPnl());
         pnl.add(tPNE, "grow");
     }
+
+
 }

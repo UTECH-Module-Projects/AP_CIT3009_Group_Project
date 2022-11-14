@@ -10,18 +10,29 @@
  * ~ Barrignton Patterson  2008034
  *
  */
+
+//Package
 package com.application.models.tables;
 
-import com.application.models.misc.Date;
+//Imported Libraries
+
+import com.application.generic.DBTable;
+import com.application.models.misc.EntityDate;
+import com.application.models.misc.EntityTime;
+import com.application.utilities.Utilities;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
- * <h1>Person Class</h1>
+ * <h1>Invoice Class</h1>
  * <p>
- * This is the Invoice class
+ * This Class is designed to store the entity record of a Invoice which is stored in the database.
  * </p>
  *
  * @author Gabrielle Johnson
@@ -29,37 +40,80 @@ import java.util.List;
  * @author Rushawn White
  * @author Barrignton Patterson
  * @version 1.0
- * */
-
+ */
+@Getter
+@Setter
 @Entity
-@Table (name = "Invoice")
-public class Invoice implements Serializable {
-    public static final String[] fields = {"ID Number", "Billing Date", "Employee ID", "Customer ID", "Item Count", "Discount", "Total"};
+@Table(name = "Invoice")
+public class Invoice implements Serializable, DBTable<Integer> {
+    /**
+     * {@link String[]} Used to store the headers to be displayed in the invoice table of the application
+     */
+    public static final String[] headers = {"ID Number", "Date", "Employee", "Customer", "Items", "Total"};
+
+    public static final int idLength = 7;
+
+    /**
+     * Stores the order of fields of invoices in the table
+     */
+    public static final int ID_NUM = 0;
+    public static final int BILL_DATE = 1;
+    public static final int BILL_TIME = 2;
+    public static final int EMP_ID = 3;
+    public static final int CUST_ID = 4;
+    public static final int DISCOUNT = 5;
+    public static final int TOTAL = 6;
+
+    /**
+     * The invoice id number (randomly generated)
+     */
     @Id
-    @Column (name = "idNum")
+    @Column(name = "idNum")
     private int idNum;
 
-    @Column (name = "billDate")
-    private Date billDate;
+    /**
+     * {@link EntityDate} The billing date of the invoice
+     */
+    @Column(name = "billDate")
+    private EntityDate billDate;
 
-    @Column (name = "empID")
-    private String empID;
+    /**
+     * {@link EntityTime} The billing time of the invoice
+     */
+    @Column(name = "billTime")
+    private EntityTime billTime;
 
-    @Column (name = "custID")
-    private String custID;
+    /**
+     * {@link String} The id number of the employee who completed the transaction
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "empID")
+    private Employee employee;
 
-    @Column (name = "discount")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "custID")
+    private Customer customer;
+
+    /**
+     * The total discount for the order
+     */
+    @Column(name = "discount")
     private double discount;
 
-    @Column (name = "total")
+    /**
+     * The overall total for the order
+     */
+    @Column(name = "total")
     private double total;
 
+    @Setter
     @OneToMany(
+            fetch = FetchType.EAGER,
             mappedBy = "invoice",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private final List<InvoiceItem> items = new ArrayList<>();
+    private List<InvoiceItem> items = new ArrayList<>();
 
     /**
      * Default Constructor
@@ -67,113 +121,49 @@ public class Invoice implements Serializable {
     public Invoice() {
         this.idNum = 0;
         this.billDate = null;
-        this.empID = "";
-        this.custID = "";
+        this.billTime = null;
+        this.employee = null;
         this.discount = 0.0d;
         this.total = 0.0d;
     }
 
     /**
-     * Primary Constructor for Invoice
-     * @param idNum
-     * @param billDate
-     * @param empID
-     * @param custID
-     * @param discount
-     * @param total
-     */
-    public Invoice(int idNum, Date billDate, String empID, String custID, double discount, double total) {
-        this.idNum = idNum;
-        this.billDate = billDate;
-        this.empID = empID;
-        this.custID = custID;
-        this.discount = discount;
-        this.total = total;
-    }
-
-    public Invoice(Date billDate, String empID, String custID, double discount, double total) {
-        this.billDate = billDate;
-        this.empID = empID;
-        this.custID = custID;
-        this.discount = discount;
-        this.total = total;
-    }
-
-    /**
+     * Primary Constructor - Used to store all data for the invoice
      *
-     * Mutators and accessors for table class
+     * @param idNum     The invoice number (randomly generated)
+     * @param billDate  The billing date of the invoice
+     * @param billTime  The billing time of the invoice
+     * @param employee  The employee who completed the transaction
+     * @param customer  The customer who placed the order
+     * @param discount  The total discount for the order
+     * @param total     The overall total for the order
      */
-    public void setIdNum(int idNum) {
+    public Invoice(int idNum, EntityDate billDate, EntityTime billTime, Employee employee, Customer customer, double discount, double total) {
         this.idNum = idNum;
-    }
-
-    public Date getBillDate() {
-        return billDate;
-    }
-
-    public void setBillDate(Date billDate) {
         this.billDate = billDate;
+        this.billTime = billTime;
+        this.employee = employee;
+        this.customer = customer;
+        this.discount = discount;
+        this.total = total;
     }
 
-    public String getEmpID() {
-        return empID;
-    }
-
-    public void setEmpID(String empID) {
-        this.empID = empID;
-    }
-
-    public String getCustID() {
-        return custID;
-    }
-
-    public void setCustID(String custID) {
-        this.custID = custID;
-    }
-
-    public int getIdNum() {
+    @Override
+    public Integer getIdNum() {
         return idNum;
     }
 
-    public double getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(double discount) {
-        this.discount = discount;
-    }
-
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
+    @Override
+    public boolean isValid() throws ParseException {
+        return !Utilities.isEmpty(idNum, billDate, billTime, total) && (Utilities.isEmpty(employee) || employee.isValid()) && (Utilities.isEmpty(customer) || customer.isValid()) && (total > 0) && (discount >= 0);
     }
 
     /**
-     * Adds items to arraylist
-     * @param item
-     */
-    public void addItem(InvoiceItem item) {
-        items.add(item);
-        item.setInvoice(this);
-    }
-
-    /**
-     * Removes items form arraylist
-     * @param item
-     */
-    public void removeItem(InvoiceItem item) {
-        items.remove(item);
-        item.setInvoice(null);
-    }
-
-    /**
-     * Covert Item array to string
-     * @return
+     * Converts Invoice Object to a String Array Format for Table Printing
+     *
+     * @return The invoice object in string array format
      */
     public String[] toArray() {
-        return new String[]{String.valueOf(this.idNum), this.billDate.toString(), this.empID, this.custID, String.valueOf(this.items.size()), String.format("$%.2f", this.discount), String.format("$%.2f", this.total)};
+        return new String[]{String.valueOf(idNum), billDate.toString(), employee.getName(), customer.getName(), String.valueOf(items.size()), String.format("$%.2f", total)};
     }
 }

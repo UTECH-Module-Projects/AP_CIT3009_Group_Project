@@ -10,17 +10,26 @@
  * ~ Barrignton Patternson  2008034
  *
  */
+
+//Package
 package com.application.models.misc;
+
+//Imported Libraries
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Date;
+
 /**
  * <h1>Person Class</h1>
  * <p>
- * This is the Person class
+ * This Class is designed to store the basic information of a Customer or Employee which is stored in the database.
  * </p>
  *
  * @author Gabrielle Johnson
@@ -28,27 +37,46 @@ import java.io.Serializable;
  * @author Rushawn White
  * @author Barrignton Patterson
  * @version 1.0
- * */
-
+ */
+@Getter
+@Setter
 @MappedSuperclass
 public abstract class Person implements Serializable {
+    /**
+     * {@link String} - The id number of the person
+     */
     @Id
     @Column(name = "idNum")
     protected String idNum;
 
-    @Column (name = "name")
+    /**
+     * {@link String} - The name of the person
+     */
+    @Column(name = "name")
     protected String name;
 
-    @Column (name = "dob")
-    protected Date dob;
+    /**
+     * {@link EntityDate} - The date of birth of the person
+     */
+    @Column(name = "dob")
+    protected EntityDate dob;
 
-    @Column (name = "address")
+    /**
+     * {@link String} - The address of the person
+     */
+    @Column(name = "address")
     protected String address;
 
-    @Column (name = "phoneNum")
+    /**
+     * {@link String} - The phone number of the person
+     */
+    @Column(name = "phoneNum")
     protected String phoneNum;
 
-    @Column (name = "email")
+    /**
+     * {@link String} - The email of the person
+     */
+    @Column(name = "email")
     protected String email;
 
     /**
@@ -57,108 +85,37 @@ public abstract class Person implements Serializable {
     public Person() {
         this.idNum = "";
         this.name = "";
-        this.dob = new Date();
+        this.dob = null;
         this.address = "";
         this.phoneNum = "";
         this.email = "";
     }
 
     /**
-     * Primary constructor to get person from the database
-     * @param idNum
-     * @param name
-     * @param dob
-     * @param address
-     * @param phoneNum
-     * @param email
-     */
-    public Person(String idNum, String name, Date dob, String address, String phoneNum, String email) {
-        this.idNum = idNum;
-        this.name = name;
-        this.dob = dob;
-        this.address = address;
-        this.phoneNum = phoneNum;
-        this.email = email;
-    }
-
-    /**
-     * Constructor created to create a new user
-     * @param name
-     * @param dob
-     * @param address
-     * @param phoneNum
-     * @param email
-     */
-    public Person(String name, Date dob, String address, String phoneNum, String email) {
-        this.name = name;
-        this.dob = dob;
-        this.address = address;
-        this.phoneNum = phoneNum;
-        this.email = email;
-    }
-
-    /**
-     * Copy Constructor for person
-     * @param person
-     */
-    public Person(Person person) {
-        this.idNum = person.idNum;
-        this.name = person.name;
-        this.dob = person.dob;
-        this.address = person.address;
-        this.phoneNum = person.phoneNum;
-        this.email = person.email;
-    }
-
-    /**
+     * Primary Constructor - Used to store all data for the person
      *
-     * Mutators and accessors for table class
+     * @param idNum    The id number of the person
+     * @param name     The name of the person
+     * @param dob      The date of birth of the person
+     * @param address  The address of the person
+     * @param phoneNum The phone number of the person
+     * @param email    The email of the person
      */
-    public String getIdNum() {
-        return idNum;
-    }
-
-    public void setIdNum(String idNum) {
+    public Person(String idNum, String name, EntityDate dob, String address, String phoneNum, String email) {
         this.idNum = idNum;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public Date getDob() {
-        return dob;
-    }
-
-    public void setDob(Date dob) {
         this.dob = dob;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getPhoneNum() {
-        return phoneNum;
-    }
-
-    public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * Calculates the age of a person using their date of birth
+     *
+     * @return The age of the person
+     */
+    public int getAge() {
+        return Math.round(dob.dateDiff(EntityDate.today()) / EntityDate.daysInYear);
     }
 }

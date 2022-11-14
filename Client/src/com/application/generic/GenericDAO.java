@@ -10,11 +10,30 @@
  * ~ Barrignton Patternson  2008034
  *
  */
+
+//Package
 package com.application.generic;
+
+//Imported Libraries
 
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * <h1>Generic Data Access Object Class</h1>
+ * <p>
+ * This Class is designed to convert time between the database and the object
+ * </p>
+ *
+ * @param <T>
+ * @param <ID>
+ *
+ * @author Gabrielle Johnson
+ * @author Jazmin Hayles
+ * @author Rushawn White
+ * @author Barrignton Patterson
+ * @version 1.0
+ */
 public interface GenericDAO<T, ID extends Serializable> {
     void create(T entity);
     void update(T entity);

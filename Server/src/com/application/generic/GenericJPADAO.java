@@ -65,7 +65,7 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
     @Transactional
     @SuppressWarnings("unchecked")
     public List<Object> getColumn(String field) throws HibernateException {
-        return entityManager.createQuery("SELECT x." + field + " FROM" + tClass.getSimpleName() + " x").getResultList();
+        return entityManager.createQuery("SELECT x." + field + " FROM " + tClass.getSimpleName() + " x").getResultList();
     }
 
     @Override

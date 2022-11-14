@@ -10,18 +10,26 @@
  * ~ Barrignton Patterson  2008034
  *
  */
+
+//Package
 package com.application.models.tables;
 
+//Imported Libraries
 
-import com.application.models.misc.Date;
+import com.application.generic.DBTable;
+import com.application.models.misc.EntityDate;
 import com.application.models.misc.Person;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.application.utilities.Utilities;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.text.ParseException;
+
 /**
- * <h1>Person Class</h1>
+ * <h1>Employee Class</h1>
  * <p>
- * This is the Employee class
+ * This Class is designed to store the entity record of a Employee which is stored in the database.
  * </p>
  *
  * @author Gabrielle Johnson
@@ -29,15 +37,46 @@ import jakarta.persistence.Table;
  * @author Rushawn White
  * @author Barrignton Patterson
  * @version 1.0
- * */
+ */
+@Getter
+@Setter
 @Entity
-@Table (name = "Employee")
-public class Employee extends Person {
-    public static final String[] types = {"Cashier", "Line Worker", "Manager", "Supervisor"};
-    @Column (name = "type")
+@Table(name = "Employee")
+public class Employee extends Person implements DBTable<String> {
+    /**
+     * {@link String[]} Used to store the headers to be displayed in the employee table of the application
+     */
+    public static final String[] headers = {"ID Number", "Full Name", "Date of Birth", "Address", "Phone Number", "Email", "Type", "Department"};
+
+    /**
+     * Stores the order of fields of employees in the table
+     */
+    public static final int ID_NUM = 0;
+    public static final int NAME = 1;
+    public static final int DOB = 2;
+    public static final int ADDRESS = 3;
+    public static final int PHONE_NUM = 4;
+    public static final int EMAIL = 5;
+    public static final int TYPE = 6;
+    public static final int DEP_CODE = 7;
+
+    /**
+     * {@link String[]} Used to store the types of employee
+     */
+    public static final String[] types = {"Cashier", "Line Worker", "Manager", "Supervisor", "Admin"};
+
+    /**
+     * {@link String} - The type of employee
+     */
+    @Column(name = "type")
     private String type;
-    @Column (name = "depCode")
-    private String depCode;
+
+    /**
+     * {@link Department} - The department of the employee
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "depCode")
+    private Department department;
 
     /**
      * Default Constructor
@@ -45,67 +84,53 @@ public class Employee extends Person {
     public Employee() {
         super();
         this.type = "";
-        this.depCode = "";
+        this.department = new Department();
     }
 
     /**
-     * Primary constructor for Employee
-     * @param idNum
-     * @param name
-     * @param dob
-     * @param address
-     * @param phoneNum
-     * @param email
-     * @param type
-     * @param depCode
+     * Primary Constructor - Used to store all data for the employee
+     *
+     * @param idNum    The ID Number
+     * @param name     The Full Name
+     * @param dob      The Date of Birth
+     * @param address  The Home Address
+     * @param phoneNum The Telephone Number
+     * @param email    The Email Address
+     * @param type     The type of employee
+     * @param department  The department of the employee
      */
-    public Employee(String idNum, String name, Date dob, String address, String phoneNum, String email, String type, String depCode) {
+    public Employee(String idNum, String name, EntityDate dob, String address, String phoneNum, String email, String type, Department department) {
         super(idNum, name, dob, address, phoneNum, email);
         this.type = type;
-        this.depCode = depCode;
-    }
-
-    public Employee(String name, Date dob, String address, String phoneNum, String email, String type, String depCode) {
-        super(name, dob, address, phoneNum, email);
-        this.type = type;
-        this.depCode = depCode;
+        this.department = department;
     }
 
     /**
+     * Constructor Used to store all data for the employee from an array of fields
      *
-     * Mutators and accessors for class
+     * @param fields The string array of attributes for the employee
      */
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getDepCode() {
-        return depCode;
-    }
-
-    public void setDepCode(String depCode) {
-        this.depCode = depCode;
+    public Employee(String[] fields) {
+        super(fields[0], fields[1], new EntityDate(fields[2].split("-")), fields[3], fields[4], fields[5]);
+        this.type = fields[6];
+        this.department = new Department(fields[7], fields[8]);
     }
 
     /**
-     * Convert Employee Object to string
-     * @return
+     * Checks if the Employee object is valid to be sent to the database
+     *
+     * @return Whether the employee object is valid (true or false)
      */
-    @Override
-    public String toString() {
-        return "Employee{" +
-                "type='" + type + '\'' +
-                ", depCode='" + depCode + '\'' +
-                ", idNum='" + idNum + '\'' +
-                ", name='" + name + '\'' +
-                ", dob=" + dob +
-                ", address='" + address + '\'' +
-                ", phoneNum='" + phoneNum + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+    public boolean isValid() throws ParseException {
+        return !Utilities.isEmpty(idNum, name, dob, address, phoneNum, email, type, department) && getAge() >= 18;
+    }
+
+    /**
+     * Converts Employee Object to a String Array Format for Table Printing
+     *
+     * @return The employee object in string array format
+     */
+    public String[] toArray() {
+        return new String[]{idNum, name, Utilities.checkNull(dob), address, phoneNum, email, type, department.getName()};
     }
 }
