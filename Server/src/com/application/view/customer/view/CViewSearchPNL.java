@@ -38,6 +38,7 @@ public class CViewSearchPNL {
         initializeComponents();
         addComponents();
         setProperties();
+        addTextSearchListeners();
     }
 
     private void initializeComponents() {
@@ -85,6 +86,41 @@ public class CViewSearchPNL {
         pnl.setBorder(titledBorder);
     }
 
+    private void addTextSearchListeners() {
+        DocumentListener dl = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setRowFilters();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setRowFilters();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                setRowFilters();
+            }
+        };
+        idTXT.getDocument().addDocumentListener(dl);
+        nameTXT.getDocument().addDocumentListener(dl);
+        addressTXT.getDocument().addDocumentListener(dl);
+        phoneNumTXT.getDocument().addDocumentListener(dl);
+        emailTXT.getDocument().addDocumentListener(dl);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setRowFilters() {
+        cViewPNL.getCustTBL().setRowFilters(
+                cViewPNL.getCustTBL().createTextFilter(idTXT, Customer.ID_NUM),
+                cViewPNL.getCustTBL().createTextFilter(nameTXT, Customer.NAME),
+                cViewPNL.getCustTBL().createTextFilter(addressTXT, Customer.ADDRESS),
+                cViewPNL.getCustTBL().createTextFilter(phoneNumTXT, Customer.PHONE_NUM),
+                cViewPNL.getCustTBL().createTextFilter(emailTXT, Customer.EMAIL)
+        );
+    }
+
     /**
      * Method clears text field
      */
@@ -104,7 +140,7 @@ public class CViewSearchPNL {
             String filePath = selector.getFilePath(cViewPNL.getPnl(), "Customer Report_" + date + ".pdf");
             if (filePath == null) return;
 
-            int[] rows = cViewPNL.getCustTBL().getTbl().getSelectedRows();
+            int[] rows = cViewPNL.getCustTBL().getSelectedRows();
 
             TableList<Customer, String> customers = new TableList<>(Customer.class, Customer.headers);
             List<TableList<Invoice, Integer>> custInvoices = new ArrayList<>();
@@ -120,15 +156,15 @@ public class CViewSearchPNL {
 
                 if (!Desktop.isDesktopSupported()) {
                     JOptionPane.showMessageDialog(cViewPNL.getPnl(), "Error when opening document!", title, JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+                } else selector.openFile(filePath, cViewPNL.getPnl(), title);
             } else {
                 JOptionPane.showMessageDialog(cViewPNL.getPnl(), "Error when creating document!", title, JOptionPane.ERROR_MESSAGE);
             }
-            selector.openFile(filePath, cViewPNL.getPnl(), title);
+            print.setSelected(false);
         } else if (e.getSource().equals(refresh)) {
-            cViewPNL.refresh();
-            ServerApp.invoices.refresh(client.getAll("Invoice"));
+            ServerApp.refresh("Customer");
+            JOptionPane.showMessageDialog(cViewPNL.getPnl(), "Successfully Refreshed!", title, JOptionPane.INFORMATION_MESSAGE);
+            refresh.setSelected(false);
         } else if (e.getSource().equals(clear)) {
             clear();
         }

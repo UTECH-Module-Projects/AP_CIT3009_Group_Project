@@ -20,6 +20,7 @@ import com.application.generic.DBTable;
 import com.application.utilities.Utilities;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -37,6 +38,7 @@ import java.io.Serializable;
  * @version 1.0
  */
 @Getter
+@Setter
 @Entity
 @Table (name = "InvoiceItem")
 public class InvoiceItem implements Serializable, DBTable<String> {
@@ -44,6 +46,8 @@ public class InvoiceItem implements Serializable, DBTable<String> {
      * {@link String[]} Used to store the headers to be displayed in the invoiceItem table of the application
      */
     public static final String[] headers = {"Product", "Quantity", "Unit Price", "Total"};
+
+    public static final int idLength = 12;
 
     /**
      * Stores the order of fields of invoice items in the table
@@ -68,6 +72,9 @@ public class InvoiceItem implements Serializable, DBTable<String> {
     @JoinColumn(name = "prodID")
     private Product product;
 
+    @Column (name = "name")
+    private String name;
+
     /**
      * The total quantity purchased
      */
@@ -84,6 +91,10 @@ public class InvoiceItem implements Serializable, DBTable<String> {
      * Default Constructor
      */
     public InvoiceItem() {
+        this.idNum = "";
+        this.invoice = null;
+        this.product = null;
+        this.name = "";
         this.quantity = 0;
         this.unitPrice = 0.0d;
     }
@@ -96,10 +107,11 @@ public class InvoiceItem implements Serializable, DBTable<String> {
      * @param quantity  The total quantity purchased
      * @param unitPrice The unit price of the product
      */
-    public InvoiceItem(String idNum, Invoice invoice, Product product, int quantity, double unitPrice) {
+    public InvoiceItem(String idNum, Invoice invoice, Product product, String name, int quantity, double unitPrice) {
         this.idNum = idNum;
         this.invoice = invoice;
         this.product = product;
+        this.name = name;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
     }
@@ -115,6 +127,14 @@ public class InvoiceItem implements Serializable, DBTable<String> {
      * @return The invoiceItem object in string array format
      */
     public String[] toArray() {
-        return new String[]{product.getName(), String.valueOf(quantity), String.format("$%.2f", unitPrice), String.format("$%.2f", quantity * unitPrice)};
+        return new String[]{name, String.valueOf(quantity), String.format("$%.2f", unitPrice), String.format("$%.2f", quantity * unitPrice)};
+    }
+
+    /**
+     * Returns the object as a Table Array
+     * @return table array
+     */
+    public Object[] toTableArray() {
+        return toArray();
     }
 }

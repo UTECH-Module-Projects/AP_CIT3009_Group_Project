@@ -66,6 +66,30 @@ import java.awt.event.*;
  */
 @Getter
 public class ServerApp extends Thread {
+    public static final String[] levels = new String[]{"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL"};
+    public static final String[] types = new String[]{"Server", "Client"};
+
+
+    /**
+     * {@link CPNL} The Customer Main Panel
+     */
+    public static Client client;
+
+    public static TableList<Customer, String> customers;
+    public static TableList<Employee, String> employees;
+    public static TableList<Invoice, Integer> invoices;
+    public static TableList<Product, String> products;
+    public static TableList<Department, String> departments;
+    public static TableList<Log, String> logs;
+
+    public static CPNL cPNL;
+    public static IPNL iPNL;
+    public static INVPNL invPNL;
+    public static RPNL rPNL;
+    public static SPNL sPNL;
+    public static EPNL ePNL;
+    public static SEPNL sePNL;
+
     /**
      * {@link String} Image Paths for all images used in application
      */
@@ -81,37 +105,14 @@ public class ServerApp extends Thread {
     public static final String salesIMG = "./Images/icon_sales.png";
     public static final String printIMG = "./Images/icon_print.png";
     public static final String cancelIMG = "./Images/icon_cancel.png";
+    public static final String checkoutIMG = "./Images/icon_checkout.png";
+    public static final String serverIMG = "./Images/icon_server.png";
     public static final String logoIMG = "./Images/logo.png";
 
-    /**
-     * {@link JFrame} the main frame of the application
-     */
-    private JFrame frame;
-    /**
-     * {@link JTabbedPane} The Side Tabbed Pane used to hold the main panels
-     */
-    private JTabbedPane sideTPNE;
-    /**
-     * {@link CPNL} The Customer Main Panel
-     */
-    private CPNL cPNL;
-    private IPNL iPNL;
-    private Client client;
-    private boolean isClosed;
-
-    public static TableList<Customer, String> customers;
-    public static TableList<Employee, String> employees;
-    public static TableList<Invoice, Integer> invoices;
-    public static TableList<Product, String> products;
-    public static TableList<Department, String> departments;
+    public static LoginPage loginPage;
     public static String[] depNames;
 
     public static Employee logEmp;
-
-
-    public ServerApp() {
-        this.isClosed = false;
-    }
 
     /**
      * look and feel sets the appearance and behaviour of the swing GUI widgets
@@ -144,59 +145,56 @@ public class ServerApp extends Thread {
         invoices = new TableList<>(Invoice.class, client.getAll("Invoice"), Invoice.headers);
         products = new TableList<>(Product.class, client.getAll("Product"), Product.headers);
         departments = new TableList<>(Department.class, client.getAll("Department"), Department.headers);
+        logs = new TableList<>(Log.class, client.getAll("Log"), Log.tblHeaders);
         depNames = departments.map(Department::getName).toArray(new String[0]);
     }
 
-    /**
-     * initializing components within frame
-     */
-    private void initializeComponents() {
-        frame = new JFrame("Admin Page");
-        frame.setLayout(new MigLayout("fill"));
-
-        sideTPNE = new JTabbedPane(JTabbedPane.LEFT);
-
-        sPNL = new SPNL(this, client);
-        cPNL = new CPNL(this, client);
-        iPNL = new IPNL(this, client);
-        pPNL = new INVPNL(this, client);
-        ePNL = new EPNL(this, client);
-        rPNL = new RPNL(this, client);
+    public static void refresh(String table) {
+        switch (table) {
+            case "Customer" -> customers.refresh(client.getAll(table));
+            case "Employee" -> employees.refresh(client.getAll(table));
+            case "Invoice" -> invoices.refresh(client.getAll(table));
+            case "Product" -> products.refresh(client.getAll(table));
+            case "Logs" -> logs.refresh(client.getAll(table));
+            case "Department" -> departments.refresh(client.getAll(table));
+        }
+        update(table);
     }
 
-    /**
-     * Adds side Panes to frame with unique tab icons
-     */
-    private void addComponents() {
-        sideTPNE.addTab(" Sales", new ImageIcon(salesIMG), sPNL.getPnl());
-        sideTPNE.addTab(" Customer", new ImageIcon(custIMG), cPNL.getPnl());
-        sideTPNE.addTab(" Invoice", new ImageIcon(invIMG), iPNL.getPnl());
-        frame.add(sideTPNE, "grow");
-    }
-
-    /**
-     * Sets the window properties of the frame
-     *
-     * @throws RuntimeException If any fatal errors occur when configuring the object streams
-     */
-    private void setProperties() throws RuntimeException {
-        frame.pack();
-        frame.setMinimumSize(frame.getSize());
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setIconImage(new ImageIcon(logoIMG).getImage());
-        frame.setVisible(true);
-
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                if (JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?", "Exit", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_NO_OPTION) {
-                    isClosed = true;
-                    client.closeConnection();
-                    System.exit(0);
-                }
+    public static void update(String table) {
+        switch (table) {
+            case "Customer" -> {
+                sPNL.getOrder().refresh();
+                cPNL.getView().refresh();
+                iPNL.getView().refresh();
+                rPNL.getView().getCustRep().refresh();
             }
-        });
+            case "Employee" -> {
+                sePNL.getView().refresh();
+                ePNL.getView().refresh();
+                iPNL.getView().refresh();
+                rPNL.getView().getEmpRep().refresh();
+            }
+
+            case "Invoice" -> {
+                iPNL.getView().refresh();
+                rPNL.getView().getInvRep().refresh();
+            }
+
+            case "Product" -> {
+                sPNL.getOrder().refresh();
+                iPNL.getView().refresh();
+                rPNL.getView().getProdRep().refresh();
+            }
+
+            case "Logs" -> {
+                sePNL.getView().refresh();
+            }
+
+            case "Department" -> {
+                ePNL.getView().refresh();
+            }
+        }
     }
 
     /**
@@ -205,16 +203,12 @@ public class ServerApp extends Thread {
      */
     @Override
     public void run() {
-        client = new Client("root");
-        logEmp = (Employee) client.findMatch("Employee", new SQLCondBuilder("idNum", SQLCond.EQ, "aDmInR++t", SQLType.TEXT), new SQLCondBuilder("email", SQLCond.EQ, "admin@janwholesale.com", SQLType.TEXT));
-        getDatabaseData();
         setLookAndFeel();
-        initializeComponents();
-        addComponents();
-        setProperties();
+        client = new Client();
+        getDatabaseData();
+        loginPage = new LoginPage();
 
         Server.log.trace("Admin Page Generated.");
-        //Notify User About Server Connection
-        JOptionPane.showMessageDialog(frame, "Server Connected!", "Server Status", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Server Connected!", "Server Status", JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -14,6 +14,7 @@ package com.application.view.employee.view;
 
 import com.application.generic.TableList;
 import com.application.models.misc.EntityDate;
+import com.application.models.tables.Customer;
 import com.application.models.tables.Employee;
 import com.application.models.tables.Invoice;
 import com.application.view.ServerApp;
@@ -27,14 +28,13 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 public class EViewSearchPNL implements ActionListener {
@@ -62,6 +62,7 @@ public class EViewSearchPNL implements ActionListener {
         initializeComponents();
         addComponents();
         setProperties();
+        addTextSearchListeners();
     }
 
     /**
@@ -149,6 +150,43 @@ public class EViewSearchPNL implements ActionListener {
         emailTXT.addKeyListener(charListener);
     }
 
+    private void addTextSearchListeners() {
+        DocumentListener dl = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setRowFilters();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setRowFilters();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                setRowFilters();
+            }
+        };
+        idTXT.getDocument().addDocumentListener(dl);
+        nameTXT.getDocument().addDocumentListener(dl);
+        addressTXT.getDocument().addDocumentListener(dl);
+        phoneNumTXT.getDocument().addDocumentListener(dl);
+        emailTXT.getDocument().addDocumentListener(dl);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setRowFilters() {
+        eViewPNL.getEmpTBL().setRowFilters(
+                eViewPNL.getEmpTBL().createTextFilter(idTXT, Employee.ID_NUM),
+                eViewPNL.getEmpTBL().createTextFilter(nameTXT, Employee.NAME),
+                eViewPNL.getEmpTBL().createTextFilter(addressTXT, Employee.ADDRESS),
+                eViewPNL.getEmpTBL().createTextFilter(phoneNumTXT, Employee.PHONE_NUM),
+                eViewPNL.getEmpTBL().createTextFilter(emailTXT, Employee.EMAIL),
+                eViewPNL.getEmpTBL().createComboBoxFilter(typeCMB, Employee.TYPE),
+                eViewPNL.getEmpTBL().createComboBoxFilter(depCMB, Employee.DEP_CODE)
+        );
+    }
+
     /**
      * Method clears text field
      */
@@ -165,9 +203,7 @@ public class EViewSearchPNL implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(typeCMB) || e.getSource().equals(depCMB)) {
-            boolean isType = e.getSource().equals(typeCMB);
-            RowFilter<TableModel, Object> rf = RowFilter.regexFilter(Objects.requireNonNull(isType ? typeCMB.getSelectedItem() : depCMB.getSelectedItem()).toString(), isType ? Employee.TYPE : Employee.DEP_CODE);
-            eViewPNL.getEmpTBL().getRSort().setRowFilter(rf);
+            setRowFilters();
         } else if (e.getSource().equals(print)) {
             EntityDate date = EntityDate.today();
             FileLocationSelector selector = new FileLocationSelector();
@@ -190,15 +226,13 @@ public class EViewSearchPNL implements ActionListener {
 
                 if (!Desktop.isDesktopSupported()) {
                     JOptionPane.showMessageDialog(eViewPNL.getPnl(), "Error when opening document!", title, JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+                } else selector.openFile(filePath, eViewPNL.getPnl(), title);
             } else {
                 JOptionPane.showMessageDialog(eViewPNL.getPnl(), "Error when creating document!", title, JOptionPane.ERROR_MESSAGE);
             }
-            selector.openFile(filePath, eViewPNL.getPnl(), title);
         } else if (e.getSource().equals(refresh)) {
-            eViewPNL.refresh();
-            ServerApp.invoices.refresh(client.getAll("Invoice"));
+            ServerApp.refresh("Employee");
+            JOptionPane.showMessageDialog(eViewPNL.getPnl(), "Successfully Refreshed!", title, JOptionPane.INFORMATION_MESSAGE);
         } else if (e.getSource().equals(clear)) {
             clear();
         }

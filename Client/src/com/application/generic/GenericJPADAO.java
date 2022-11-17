@@ -12,6 +12,7 @@
  */
 package com.application.generic;
 
+//Imported Libaries
 import com.application.utilities.Utilities;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -21,6 +22,18 @@ import org.hibernate.HibernateException;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * <h1>Generic Java Persistence Application Data Access Object Class</h1>
+ * <p>
+ * This class is design
+ * </p>
+ *
+ * @author Gabrielle Johnson
+ * @author Jazmin Hayles
+ * @author Rushawn White
+ * @author Barrignton Patterson
+ * @version 1.0
+ * */
 public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, ID> {
     private final Class<T> tClass;
     private final EntityManager entityManager;
@@ -65,7 +78,7 @@ public class GenericJPADAO<T, ID extends Serializable> implements GenericDAO<T, 
     @Transactional
     @SuppressWarnings("unchecked")
     public List<Object> getColumn(String field) throws HibernateException {
-        return entityManager.createQuery("SELECT x." + field + " FROM" + tClass.getSimpleName() + " x").getResultList();
+        return entityManager.createQuery("SELECT x." + field + " FROM " + tClass.getSimpleName() + " x").getResultList();
     }
 
     @Override

@@ -17,6 +17,10 @@ package com.application.models.misc;
 //Imported Libraries
 
 import java.io.Serializable;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * <h1>Time Class</h1>
@@ -46,6 +50,10 @@ public class EntityTime implements Serializable {
      */
     private final int second;
 
+    public static EntityTime now() {
+        return new EntityTime(DateTimeFormatter.ofPattern("HH:mm:ss").format(LocalDateTime.now()).split(":"));
+    }
+
     /**
      * Primary Constructor - Used to store all data for the time
      *
@@ -57,6 +65,12 @@ public class EntityTime implements Serializable {
         this.hour = hour;
         this.minute = minute;
         this.second = second;
+    }
+
+    public EntityTime(String[] fields) {
+        this.hour = Integer.parseInt(fields[0]);
+        this.minute = Integer.parseInt(fields[1]);
+        this.second = Integer.parseInt(fields[2]);
     }
 
     /**

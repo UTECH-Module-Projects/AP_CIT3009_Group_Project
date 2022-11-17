@@ -135,4 +135,12 @@ public class Employee extends Person implements DBTable<String> {
     public String[] toArray() {
         return new String[]{idNum, name, Utilities.checkNull(dob), address, phoneNum, email, type, department.getName()};
     }
+
+    /**
+     * Returns the object as a Table Array
+     * @return table array
+     */
+    public Object[] toTableArray() {
+        return new Object[]{idNum, name, Utilities.checkNull(dob), address, phoneNum, email, type, department.getName()};
+    }
 }

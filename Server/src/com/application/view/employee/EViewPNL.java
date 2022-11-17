@@ -15,8 +15,8 @@ package com.application.view.employee;
 import com.application.generic.TableList;
 import com.application.models.tables.Employee;
 import com.application.models.tables.Invoice;
-import com.application.view.EPNL;
 import com.application.view.ServerApp;
+import com.application.view.EPNL;
 import com.application.view.employee.view.EViewFormPNL;
 import com.application.view.employee.view.EViewInvoicePNL;
 import com.application.view.employee.view.EViewSearchPNL;
@@ -81,15 +81,7 @@ public class EViewPNL implements ListSelectionListener {
         pnl.add(invPNL.getPnl(), "grow, wrap");
     }
 
-    /**
-     * Sets properties of components
-     */
     private void setProperties() {
-        empTBL.setTextFieldRowFilter(search.getIdTXT(), Employee.ID_NUM);
-        empTBL.setTextFieldRowFilter(search.getNameTXT(), Employee.NAME);
-        empTBL.setTextFieldRowFilter(search.getAddressTXT(), Employee.ADDRESS);
-        empTBL.setTextFieldRowFilter(search.getPhoneNumTXT(), Employee.PHONE_NUM);
-        empTBL.setTextFieldRowFilter(search.getEmailTXT(), Employee.EMAIL);
         empTBL.addListSelectionListener(this);
     }
 
@@ -108,9 +100,8 @@ public class EViewPNL implements ListSelectionListener {
      * Method fetches table from database and displays in jTable
      */
     public void refresh() {
-        clear();
-        ServerApp.employees.refresh(client.getAll("Employee"));
         empTBL.refresh(ServerApp.employees.to2DArray());
+        clear();
     }
 
     /**

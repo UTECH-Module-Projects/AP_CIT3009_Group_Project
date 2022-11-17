@@ -23,6 +23,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -39,6 +40,7 @@ import java.io.Serializable;
  * @version 1.0
  */
 @Getter
+@Setter
 @Entity
 @Table (name = "Product")
 public class Product implements Serializable, DBTable<String> {
@@ -46,6 +48,8 @@ public class Product implements Serializable, DBTable<String> {
      * {@link String[]} Used to store the headers to be displayed in the product table of the application
      */
     public static final String[] headers = {"ID Number", "Name", "Short Description", "Long Description", "Stock", "Total Sold", "Unit Price"};
+
+    public static final int idLength = 10;
 
     /**
      * Stores the order of fields of invoices in the table
@@ -142,7 +146,7 @@ public class Product implements Serializable, DBTable<String> {
      */
     @Override
     public boolean isValid() {
-        return !Utilities.isEmpty(idNum, name, shDesc, loDesc, price) && (price > 0);
+        return !Utilities.isEmpty(idNum, name, shDesc, loDesc, price) && (price > 0) && (stock >= 0) && (totSold >= 0);
     }
 
     /**
@@ -152,6 +156,15 @@ public class Product implements Serializable, DBTable<String> {
      */
     @Override
     public String[] toArray() {
-        return new String[]{idNum, name, shDesc, loDesc, String.valueOf(stock), String.format("%.2f", price)};
+        return new String[]{idNum, name, shDesc, loDesc, String.valueOf(stock), String.valueOf(totSold), String.format("$%.2f", price)};
     }
+
+    /**
+     * Returns the object as a Table Array
+     * @return table array
+     */
+    public Object[] toTableArray() {
+        return toArray();
+    }
+
 }

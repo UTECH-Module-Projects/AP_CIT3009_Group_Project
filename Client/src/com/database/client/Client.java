@@ -22,7 +22,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
 
@@ -118,9 +120,7 @@ public class Client {
             objOs.close();
             objIs.close();
             cs.close();
-            log.trace("[Client-" + this.id + "] Connections to Server closed.");
         } catch (IOException e) {
-            log.fatal("[Client-" + this.id + "] I/O Exception! {" + e.getMessage() + "}");
             throw new RuntimeException(e);
         }
     }
@@ -132,61 +132,24 @@ public class Client {
             objOs.writeObject(table);
             if (obj != null)
                 objOs.writeObject(obj);
-        } catch (InvalidClassException e) {
-            log(Level.FATAL, "Invalid Class Exception!", e);
-            throw new RuntimeException(e);
-        } catch (NotSerializableException e) {
-            log(Level.FATAL, "Not Serializable Exception!", e);
-            throw new RuntimeException(e);
         } catch (IOException e) {
-            log(Level.FATAL, "I/O Exception!", e);
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            log(Level.FATAL, "Unknown Exception!", e);
             throw new RuntimeException(e);
         }
     }
 
-    private Object returnObject(String action, String table) throws RuntimeException {
+    private Object returnObject() throws RuntimeException {
         try {
-            log(Level.TRACE, action + " operation performed on " + table + ".");
-
             return objIs.readObject();
-        } catch (InvalidClassException e) {
-            log(Level.FATAL, "Invalid Class Exception!", e);
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            log(Level.FATAL, "Class Not Found Exception!", e);
-            throw new RuntimeException(e);
-        } catch (StreamCorruptedException e) {
-            log(Level.FATAL, "Stream Corrupted Exception!", e);
-            throw new RuntimeException(e);
-        } catch (OptionalDataException e) {
-            log(Level.FATAL, "Optional Data Exception!", e);
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            log(Level.FATAL, "I/O Exception!", e);
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            log(Level.FATAL, "Unknown Exception!", e);
+        } catch (ClassNotFoundException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private List<Object> returnList(String action, String table) throws RuntimeException {
+    private List<Object> returnList() throws RuntimeException {
         try {
-            log(Level.TRACE, action + " operation performed on " + table + ".");
-
             return (List<Object>) objIs.readObject();
-        } catch (ClassNotFoundException e) {
-            log.fatal("[Client-" + this.id + "] Class Not Found Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            log.fatal("[Client-" + this.id + "] I/O Exception! {" + e.getMessage() + "}");
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            log(Level.FATAL, "Unknown Exception!", e);
+        } catch (ClassNotFoundException | IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -202,7 +165,7 @@ public class Client {
      */
     public Object cud(String action, String table, Object entity) throws RuntimeException {
         start(action, table, entity);
-        return returnObject(action, table);
+        return returnObject();
     }
 
     /**
@@ -215,7 +178,7 @@ public class Client {
      */
     public Object get(String table, Object id) throws RuntimeException {
         start("get", table, id);
-        return returnObject("get", table);
+        return returnObject();
     }
 
     /**
@@ -228,7 +191,7 @@ public class Client {
      */
     public List<Object> getColumn(String table, String field) throws RuntimeException {
         start("getColumn", table, field);
-        return returnList("getColumn", table);
+        return returnList();
     }
 
     /**
@@ -240,7 +203,7 @@ public class Client {
      */
     public List<Object> getAll(String table) throws RuntimeException {
         start("getAll", table, null);
-        return returnList("getAll", table);
+        return returnList();
     }
 
     /**
@@ -253,7 +216,7 @@ public class Client {
      */
     public Object genID(String table, int length) throws RuntimeException {
         start("genID", table, length);
-        return returnObject("genID", table);
+        return returnObject();
     }
 
     /**
@@ -266,7 +229,7 @@ public class Client {
      */
     public Object findMatch(String table, SQLCondBuilder...conditions) throws RuntimeException {
         start("findMatch", table, conditions);
-        return returnObject("findMatch", table);
+        return returnObject();
     }
 
     /**
@@ -279,14 +242,27 @@ public class Client {
      */
     public List<Object> findMatchAll(String table, SQLCondBuilder...conditions) throws RuntimeException {
         start("findMatchAll", table, conditions);
-        return returnList("findMatchAll", table);
+        return returnList();
     }
 
-    public void log(Level level, String msg) {
-        log.log(level, "[Client-" + id + "] " + msg);
+    public void log(Level level, String msg) throws RuntimeException {
+        try {
+            objOs.writeObject("log");
+            objOs.writeObject(level);
+            objOs.writeObject(msg);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void log(Level level, String msg, Exception ex) {
-        log.log(level, "[Client-" + id + "] " + msg + " {" + ex.getMessage() + "}");
+    public void log(Level level, String msg, Exception e) throws RuntimeException {
+        try {
+            objOs.writeObject("logError");
+            objOs.writeObject(level);
+            objOs.writeObject(msg);
+            objOs.writeObject(e);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

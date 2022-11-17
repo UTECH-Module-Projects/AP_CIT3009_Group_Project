@@ -49,7 +49,7 @@ public class CViewFormPNL implements ActionListener {
     }
 
     private void initializeComponents() {
-        pnl = new JPanel(new MigLayout("fill, ins 10 10 0 10", "[]10[]10[]10[]", "[]5[]5[]5[]5[]5[]5[]5[]5[]15[]"));
+        pnl = new JPanel(new MigLayout("fill, ins 10 10 0 10", "[grow 0]10[]10[]10[]", "[]5[]5[]5[]5[]5[]5[]5[]5[]15[]"));
 
         idLBL = new JLabel("ID Number:");
         nameLBL = new JLabel("Full Name:");
@@ -77,28 +77,29 @@ public class CViewFormPNL implements ActionListener {
     }
 
     private void addComponents() {
-        pnl.add(idLBL, "grow");
-        pnl.add(idTXT, "grow, span 2, wrap");
-        pnl.add(nameLBL, "grow");
-        pnl.add(nameTXT, "grow, span 3, wrap");
-        pnl.add(dobLBL, "grow");
-        pnl.add(dob.getDate(), "grow, span 2, wrap");
-        pnl.add(emailLBL, "grow");
-        pnl.add(emailTXT, "grow, span 3, wrap");
-        pnl.add(phoneNumLBL, "grow");
-        pnl.add(phoneNumTXT, "grow, span 2, wrap");
-        pnl.add(addressLBL, "grow");
+        pnl.add(idLBL);
+        pnl.add(idTXT, "growx, span 2, wrap");
+        pnl.add(nameLBL);
+        pnl.add(nameTXT, "growx, span 3, wrap");
+        pnl.add(dobLBL);
+        pnl.add(dob.getDate(), "growx, span 2, wrap");
+        pnl.add(emailLBL);
+        pnl.add(emailTXT, "growx, span 3, wrap");
+        pnl.add(phoneNumLBL);
+        pnl.add(phoneNumTXT, "growx, span 2, wrap");
+        pnl.add(addressLBL);
         pnl.add(addressTXTA, "grow, span 3, wrap");
-        pnl.add(memLBL, "grow");
-        pnl.add(isMem.getYes(), "grow");
-        pnl.add(isMem.getNo(), "grow, wrap");
-        pnl.add(domLBL, "grow");
-        pnl.add(dom.getDate(), "grow, span 2, wrap");
-        pnl.add(domeLBL, "grow");
-        pnl.add(dome.getDate(), "grow, span 2, wrap");
-        pnl.add(save, "skip 1, width 100");
-        pnl.add(delete, "width 100");
-        pnl.add(clear, "wrap, width 100");
+        pnl.add(memLBL);
+        pnl.add(isMem.getYes());
+        pnl.add(isMem.getNo(), "growx, wrap");
+        pnl.add(domLBL);
+        pnl.add(dom.getDate(), "growx, span 2, wrap");
+        pnl.add(domeLBL);
+        pnl.add(dome.getDate(), "growx, span 2, wrap");
+
+        pnl.add(save, "center, span, split 3, width 100");
+        pnl.add(delete, "center, width 100");
+        pnl.add(clear, "center, wrap, width 100, wrap");
     }
 
     private void setProperties() {
@@ -177,6 +178,7 @@ public class CViewFormPNL implements ActionListener {
         int custIndex = cViewPNL.getCustIndex();
         if (e.getSource().equals(clear)) {
             clear();
+            clear.setSelected(false);
         } else if (e.getSource().equals(save) || (e.getSource().equals(delete) && custIndex != -1)) {
             boolean isSave = e.getSource().equals(save);
             boolean isNew = custID.equals(idTXT.getText());
@@ -231,8 +233,7 @@ public class CViewFormPNL implements ActionListener {
                         ServerApp.customers.remove(custIndex);
                         cViewPNL.getCustTBL().getTModel().removeRow(custIndex);
                     }
-
-                    cViewPNL.clear();
+                    ServerApp.update("Customer");
                 } else {
                     client.log(Level.WARN, "Could not " + cudType + " customer! {" + idNum + "}");
                     JOptionPane.showMessageDialog(pnl, "Could not " + cudType + " customer! Try again...", title, JOptionPane.ERROR_MESSAGE);
@@ -243,6 +244,8 @@ public class CViewFormPNL implements ActionListener {
                     }
                 }
             }
+            save.setSelected(false);
+            delete.setSelected(false);
         }
     }
 }

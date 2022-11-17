@@ -65,7 +65,7 @@ public class EViewFormPNL implements ActionListener {
      * Initializes swing Components used in this form
      */
     private void initializeComponents() {
-        pnl = new JPanel(new MigLayout("fill, ins 10 10 0 10", "[]10[]10[]10[]", "[]5[]5[]5[]5[]5[]5[]5[]15[]"));
+        pnl = new JPanel(new MigLayout("fill, ins 10 10 0 10", "[grow 0]10[]10[]10[]", "[]5[]5[]5[]5[]5[]5[]5[]15[]"));
 
         idLBL = new JLabel("ID Number:");
         nameLBL = new JLabel("Full Name:");
@@ -94,22 +94,23 @@ public class EViewFormPNL implements ActionListener {
      * adding components to the panel with miglayout constraints
      */
     private void addComponents() {
-        pnl.add(idLBL, "grow");
-        pnl.add(idTXT, "grow, span 2, wrap");
-        pnl.add(nameLBL, "grow");
-        pnl.add(nameTXT, "grow, span 3, wrap");
-        pnl.add(dobLBL, "grow");
-        pnl.add(dob.getDate(), "grow, span 2, wrap");
-        pnl.add(emailLBL, "grow");
-        pnl.add(emailTXT, "grow, span 3, wrap");
-        pnl.add(phoneNumLBL, "grow");
-        pnl.add(phoneNumTXT, "grow, span 2, wrap");
-        pnl.add(addressLBL, "grow");
+        pnl.add(idLBL);
+        pnl.add(idTXT, "growx, span 2, wrap");
+        pnl.add(nameLBL);
+        pnl.add(nameTXT, "growx, span 3, wrap");
+        pnl.add(dobLBL);
+        pnl.add(dob.getDate(), "growx, span 2, wrap");
+        pnl.add(emailLBL);
+        pnl.add(emailTXT, "growx, span 3, wrap");
+        pnl.add(phoneNumLBL);
+        pnl.add(phoneNumTXT, "growx, span 2, wrap");
+        pnl.add(addressLBL);
         pnl.add(addressTXTA, "grow, span 3, wrap");
-        pnl.add(typeLBL, "grow");
-        pnl.add(typeCMB, "grow, span 2, wrap");
-        pnl.add(depLBL, "grow");
-        pnl.add(depCMB, "grow, span 2, wrap");
+        pnl.add(typeLBL);
+        pnl.add(typeCMB, "growx, span 2, wrap");
+        pnl.add(depLBL);
+        pnl.add(depCMB, "growx, span 2, wrap");
+
         pnl.add(save, "skip 1, width 100");
         pnl.add(delete, "width 100");
         pnl.add(clear, "wrap, width 100");
@@ -238,7 +239,7 @@ public class EViewFormPNL implements ActionListener {
                         eViewPNL.getEmpTBL().getTModel().removeRow(empIndex);
                     }
 
-                    eViewPNL.clear();
+                    ServerApp.update("Employee");
                 } else {
                     client.log(Level.WARN, "Could not " + cudType + " employee! {" + idNum + "}");
                     JOptionPane.showMessageDialog(pnl, "Could not " + cudType + " employee! Try again...", title, JOptionPane.ERROR_MESSAGE);

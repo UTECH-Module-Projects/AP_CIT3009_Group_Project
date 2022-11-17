@@ -51,6 +51,13 @@ public class Customer extends Person implements DBTable<String> {
     public static final String[] headers = {"ID Number", "Full Name", "Date of Birth", "Address", "Phone Number", "Email", "Is Member?", "Date of Membership", "Date of Expiry"};
 
     /**
+     * Used to store the length of an id number
+     */
+    public static final int idLength = 8;
+
+    public static final float discount = 0.1f;
+
+    /**
      * Stores the order of fields of customers in the table
      */
     public static final int ID_NUM = 0;
@@ -63,10 +70,7 @@ public class Customer extends Person implements DBTable<String> {
     public static final int DOM = 7;
     public static final int DOME = 8;
 
-    /**
-     * Used to store the length of an id number
-     */
-    public static final int idLength = 8;
+
 
     /**
      * Stores whether the customer is a member
@@ -134,5 +138,13 @@ public class Customer extends Person implements DBTable<String> {
      */
     public String[] toArray() {
         return new String[]{idNum, name, Utilities.checkNull(dob), address, phoneNum, email, String.valueOf(isMem), isMem ? Utilities.checkNull(dom) : "", isMem ? Utilities.checkNull(dome) : ""};
+    }
+
+    /**
+     * Returns the object as a Table Array
+     * @return table array
+     */
+    public Object[] toTableArray() {
+        return toArray();
     }
 }

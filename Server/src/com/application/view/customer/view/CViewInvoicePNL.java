@@ -104,11 +104,16 @@ public class CViewInvoicePNL implements ActionListener, ListSelectionListener {
         totSalesLBL.setText("Sales:");
         firstDateLBL.setText("First Date:");
         lastDateLBL.setText("Last Date:");
+        refresh();
         invTBL.clear();
-        invIndex = -1;
+        pnl.setVisible(false);
+    }
+
+    public void refresh() {
+        invTBL.clearSelection();
         delete.setEnabled(false);
         print.setEnabled(false);
-        pnl.setVisible(false);
+        invIndex = -1;
     }
 
     public void update(String custID) {
@@ -142,12 +147,14 @@ public class CViewInvoicePNL implements ActionListener, ListSelectionListener {
         } else clear();
     }
 
+
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(print)) {
             EntityDate date = EntityDate.today();
             FileLocationSelector selector = new FileLocationSelector();
-            String filePath = selector.getFilePath(cViewPNL.getPnl(), custID + " Invoice_" + date + ".pdf");
+            String filePath = selector.getFilePath(cViewPNL.getPnl(), custID + "_Invoice_" + date + ".pdf");
             if (filePath == null) return;
 
             int[] rows = invTBL.getTbl().getSelectedRows();
@@ -162,26 +169,26 @@ public class CViewInvoicePNL implements ActionListener, ListSelectionListener {
 
                 if (!Desktop.isDesktopSupported()) {
                     JOptionPane.showMessageDialog(cViewPNL.getPnl(), "Error when opening document!", title, JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+                } else selector.openFile(filePath, cViewPNL.getPnl(), title);
             } else {
                 JOptionPane.showMessageDialog(cViewPNL.getPnl(), "Error when creating document!", title, JOptionPane.ERROR_MESSAGE);
             }
-            selector.openFile(filePath, cViewPNL.getPnl(), title);
+            refresh();
+            print.setSelected(false);
         } else if (e.getSource().equals(delete)) {
             int[] selRows = invTBL.getTbl().getSelectedRows();
             int invCount = 0;
             String s = (selRows.length > 1 ? "s" : "");
 
             if (JOptionPane.showConfirmDialog(cViewPNL.getCPNL().getPnl(), "Delete Invoice" + s + "?", title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                for (int row : selRows) {
-                    int idNum = invoices.get(row).getIdNum();
+                for (int i = selRows.length-1; i >= 0; i--) {
+                    int idNum = invoices.get(selRows[i]).getIdNum();
                     boolean result = (Boolean) client.cud("delete", "Invoice", idNum);
 
                     if (result) {
                         client.log(Level.INFO, "deleted invoice. {" + idNum + "}");
                         ++invCount;
-                        invoices.remove(row);
+                        invoices.remove(selRows[i]);
                     } else {
                         client.log(Level.WARN, "Could not delete invoice! {" + idNum + "}");
                     }
@@ -190,12 +197,12 @@ public class CViewInvoicePNL implements ActionListener, ListSelectionListener {
                 String resultS = (selRows.length > 1 ? (invCount > 1 ? "s" : "") : "");
                 JOptionPane.showMessageDialog(cViewPNL.getCPNL().getPnl(), resultMsg + "Invoice" + resultS + " successfully deleted!", title, JOptionPane.INFORMATION_MESSAGE);
                 update(this.custID);
+                ServerApp.update("Invoice");
             }
+            delete.setSelected(false);
         } else if (e.getSource().equals(clear)) {
-            invTBL.clearSelection();
-            delete.setEnabled(false);
-            print.setEnabled(false);
-            invIndex = -1;
+            refresh();
+            clear.setSelected(false);
         }
     }
 

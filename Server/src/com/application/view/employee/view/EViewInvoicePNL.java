@@ -101,11 +101,16 @@ public class EViewInvoicePNL implements ActionListener, ListSelectionListener {
         totSalesLBL.setText("Sales:");
         firstDateLBL.setText("First Date:");
         lastDateLBL.setText("Last Date:");
+        refresh();
         invTBL.clear();
-        invIndex = -1;
+        pnl.setVisible(false);
+    }
+
+    public void refresh() {
+        invTBL.clearSelection();
         delete.setEnabled(false);
         print.setEnabled(false);
-        pnl.setVisible(false);
+        invIndex = -1;
     }
 
     public void update(String empID) {
@@ -144,7 +149,7 @@ public class EViewInvoicePNL implements ActionListener, ListSelectionListener {
         if (e.getSource().equals(print)) {
             EntityDate date = EntityDate.today();
             FileLocationSelector selector = new FileLocationSelector();
-            String filePath = selector.getFilePath(eViewPNL.getPnl(), empID + " Invoice_" + date + ".pdf");
+            String filePath = selector.getFilePath(eViewPNL.getPnl(), empID + "_Invoice_" + date + ".pdf");
             if (filePath == null) return;
 
             int[] rows = invTBL.getTbl().getSelectedRows();
@@ -159,12 +164,11 @@ public class EViewInvoicePNL implements ActionListener, ListSelectionListener {
 
                 if (!Desktop.isDesktopSupported()) {
                     JOptionPane.showMessageDialog(eViewPNL.getPnl(), "Error when opening document!", title, JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+                } else selector.openFile(filePath, eViewPNL.getPnl(), title);
             } else {
                 JOptionPane.showMessageDialog(eViewPNL.getPnl(), "Error when creating document!", title, JOptionPane.ERROR_MESSAGE);
             }
-            selector.openFile(filePath, eViewPNL.getPnl(), title);
+            refresh();
         } else if (e.getSource().equals(delete)) {
             int[] selRows = invTBL.getTbl().getSelectedRows();
             int invCount = 0;
@@ -187,12 +191,11 @@ public class EViewInvoicePNL implements ActionListener, ListSelectionListener {
                 String resultS = (selRows.length > 1 ? (invCount > 1 ? "s" : "") : "");
                 JOptionPane.showMessageDialog(eViewPNL.getEPNL().getPnl(), resultMsg + "Invoice" + resultS + " successfully deleted!", title, JOptionPane.INFORMATION_MESSAGE);
                 update(this.empID);
+                ServerApp.update("Invoice");
             }
+            delete.setSelected(false);
         } else if (e.getSource().equals(clear)) {
-            invTBL.clearSelection();
-            delete.setEnabled(false);
-            print.setEnabled(false);
-            invIndex = -1;
+            refresh();
         }
     }
 

@@ -81,15 +81,7 @@ public class CViewPNL implements ListSelectionListener {
         pnl.add(invPNL.getPnl(), "grow, wrap");
     }
 
-    /**
-     * Sets properties of components
-     */
     private void setProperties() {
-        custTBL.setTextFieldRowFilter(search.getIdTXT(), Customer.ID_NUM);
-        custTBL.setTextFieldRowFilter(search.getNameTXT(), Customer.NAME);
-        custTBL.setTextFieldRowFilter(search.getAddressTXT(), Customer.ADDRESS);
-        custTBL.setTextFieldRowFilter(search.getPhoneNumTXT(), Customer.PHONE_NUM);
-        custTBL.setTextFieldRowFilter(search.getEmailTXT(), Customer.EMAIL);
         custTBL.addListSelectionListener(this);
     }
 
@@ -108,10 +100,8 @@ public class CViewPNL implements ListSelectionListener {
      * Method fetches table from database and displays in jTable
      */
     public void refresh() {
-        clear();
-        ServerApp.customers.refresh(client.getAll("Customer"));
         custTBL.refresh(ServerApp.customers.to2DArray());
-
+        clear();
     }
 
     /**

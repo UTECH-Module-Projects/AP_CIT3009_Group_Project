@@ -12,10 +12,9 @@
  */
 package com.application.view;
 
-import com.application.models.misc.EntityDate;
+import com.application.generic.TableList;
 import com.application.models.tables.Invoice;
-import com.application.view.sales.SCartPNL;
-import com.application.view.inventory.SCheckoutPNL;
+import com.application.models.tables.InvoiceItem;
 import com.application.view.sales.SOrderPNL;
 import com.database.server.Client;
 import lombok.Getter;
@@ -26,26 +25,21 @@ import javax.swing.*;
 
 @Getter
 public class SPNL {
-    private final ServerApp serverApp;
     private final Client client;
     private JPanel pnl;
     private JTabbedPane tPNE;
-    private SCartPNL cart;
     private SOrderPNL order;
     @Setter
     private Invoice invoice;
-    @Setter
-    private int invID;
+    private final TableList<InvoiceItem, String> items;
 
     /**
      * Primary Constructor
-     * @param serverApp
      * @param client
      */
-    public SPNL(ServerApp serverApp, Client client) {
-        this.serverApp = serverApp;
+    public SPNL(Client client) {
         this.client = client;
-        invID = (int) client.genID("Invoice", Invoice.idLength);
+        items = new TableList<>(InvoiceItem.class, InvoiceItem.headers);
         resetInvoice();
         initializeComponents();
         addComponents();
@@ -56,10 +50,10 @@ public class SPNL {
      * Each section of this panel is broken down into separate functioning panels
      */
     private void initializeComponents() {
-        pnl = new JPanel(new MigLayout("fill"));
+        pnl = new JPanel(new MigLayout("fill, ins 10 10 10 0"));
         tPNE = new JTabbedPane();
 
-        order = new SOrderPNL("Place Order", this, client, invoice);
+        order = new SOrderPNL("Place Order", this, client, invoice, items);
     }
 
     /**
@@ -71,9 +65,9 @@ public class SPNL {
     }
 
     public void resetInvoice() {
-        invID = (int) client.genID("Invoice", Invoice.idLength);
         invoice = new Invoice();
-        invoice.setIdNum(invID);
+        invoice.setIdNum((int) client.genID("Invoice", Invoice.idLength));
         invoice.setEmployee(ServerApp.logEmp);
+        items.clear();
     }
 }

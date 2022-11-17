@@ -53,16 +53,17 @@ public class Invoice implements Serializable, DBTable<Integer> {
 
     public static final int idLength = 7;
 
+    public static final float GCT = 1.15f;
+
     /**
      * Stores the order of fields of invoices in the table
      */
     public static final int ID_NUM = 0;
     public static final int BILL_DATE = 1;
-    public static final int BILL_TIME = 2;
-    public static final int EMP_ID = 3;
-    public static final int CUST_ID = 4;
-    public static final int DISCOUNT = 5;
-    public static final int TOTAL = 6;
+    public static final int EMPLOYEE = 2;
+    public static final int CUSTOMER = 3;
+    public static final int ITEMS = 4;
+    public static final int TOTAL = 5;
 
     /**
      * The invoice id number (randomly generated)
@@ -165,5 +166,13 @@ public class Invoice implements Serializable, DBTable<Integer> {
      */
     public String[] toArray() {
         return new String[]{String.valueOf(idNum), billDate.toString(), employee.getName(), customer.getName(), String.valueOf(items.size()), String.format("$%.2f", total)};
+    }
+
+    /**
+     * Returns the object as a Table Array
+     * @return table array
+     */
+    public Object[] toTableArray() {
+        return toArray();
     }
 }

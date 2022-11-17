@@ -27,6 +27,7 @@ import lombok.Getter;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Date;
 
 /**
  * <h1>Logger Class</h1>
@@ -48,15 +49,17 @@ public class Log implements Serializable, DBTable<String> {
      * {@link String[]} Used to store the headers to be displayed in the invoiceItem table of the application
      */
     public static final String[] headers = {"Timestamp", "Type", "Level", "Message", "Client ID"};
+    public static final String[] tblHeaders = {"Date", "Time", "Type", "Level", "Message", "Client ID"};
 
     /**
      * Stores the order of fields of logs in the table
      */
-    public static final int TIMESTAMP = 0;
-    public static final int TYPE = 1;
-    public static final int LEVEL = 2;
-    public static final int MESSAGE = 3;
-    public static final int CLIENT_ID = 4;
+    public static final int DATE = 0;
+    public static final int TIME = 1;
+    public static final int TYPE = 2;
+    public static final int LEVEL = 3;
+    public static final int MESSAGE = 4;
+    public static final int CLIENT_ID = 5;
 
     /**
      * {@link String} - The timestamp the log was recorded
@@ -66,10 +69,10 @@ public class Log implements Serializable, DBTable<String> {
     private String timestamp;
 
     /**
-     * {@link EntityDate} - The date the log was recorded
+     * {@link Date} - The date the log was recorded
      */
     @Column(name = "date")
-    private EntityDate entityDate;
+    private Date date;
 
     /**
      * {@link String} - The type of application (Server/ Client) where the log was recorded
@@ -100,7 +103,7 @@ public class Log implements Serializable, DBTable<String> {
      */
     public Log() {
         this.timestamp = "";
-        this.entityDate = null;
+        this.date = null;
         this.type = "";
         this.level = "";
         this.message = "";
@@ -110,16 +113,15 @@ public class Log implements Serializable, DBTable<String> {
     /**
      * Primary Constructor - Used to store all data for the log
      *
-     * @param timestamp The timestamp the log was recorded
-     * @param entityDate      The date the log was recorded
-     * @param type      The type of application (Server/ Client) where the log was recorded
-     * @param level     The level (trace, debug, info, warn, error, fatal) of log recorded
-     * @param message   The message that was logged
-     * @param clientID  The unique id of the client
+     * @param timestamp  The timestamp the log was recorded
+     * @param type       The type of application (Server/ Client) where the log was recorded
+     * @param level      The level (trace, debug, info, warn, error, fatal) of log recorded
+     * @param message    The message that was logged
+     * @param clientID   The unique id of the client
      */
-    public Log(String timestamp, EntityDate entityDate, String type, String level, String message, String clientID) {
+    public Log(String timestamp, Date date, String type, String level, String message, String clientID) {
         this.timestamp = timestamp;
-        this.entityDate = entityDate;
+        this.date = date;
         this.type = type;
         this.level = level;
         this.message = message;
@@ -127,7 +129,6 @@ public class Log implements Serializable, DBTable<String> {
     }
 
     /**
-     *
      * @return the timestamp
      */
     @Override
@@ -136,7 +137,8 @@ public class Log implements Serializable, DBTable<String> {
     }
 
     /**
-     *  Check if the imformation is vaild
+     * Check if the imformation is vaild
+     *
      * @return Returns whether it is (true/false)
      * @throws ParseException return when fail to return string properly
      */
@@ -152,5 +154,9 @@ public class Log implements Serializable, DBTable<String> {
      */
     public String[] toArray() {
         return new String[]{timestamp, type, level, message.trim(), Utilities.checkNull(clientID)};
+    }
+
+    public Object[] toTableArray() {
+        return new Object[]{date, timestamp, type, level, message.trim(), Utilities.checkNull(clientID)};
     }
 }

@@ -42,6 +42,7 @@ import java.util.List;
  * @version 1.0
  */
 @Getter
+@Setter
 @Entity
 @Table(name = "Invoice")
 public class Invoice implements Serializable, DBTable<Integer> {
@@ -50,16 +51,19 @@ public class Invoice implements Serializable, DBTable<Integer> {
      */
     public static final String[] headers = {"ID Number", "Date", "Employee", "Customer", "Items", "Total"};
 
+    public static final int idLength = 7;
+
+    public static final float GCT = 1.15f;
+
     /**
      * Stores the order of fields of invoices in the table
      */
     public static final int ID_NUM = 0;
     public static final int BILL_DATE = 1;
-    public static final int BILL_TIME = 2;
-    public static final int EMP_ID = 3;
-    public static final int CUST_ID = 4;
-    public static final int DISCOUNT = 5;
-    public static final int TOTAL = 6;
+    public static final int EMPLOYEE = 2;
+    public static final int CUSTOMER = 3;
+    public static final int ITEMS = 4;
+    public static final int TOTAL = 5;
 
     /**
      * The invoice id number (randomly generated)
@@ -72,13 +76,13 @@ public class Invoice implements Serializable, DBTable<Integer> {
      * {@link EntityDate} The billing date of the invoice
      */
     @Column(name = "billDate")
-    private EntityDate billEntityDate;
+    private EntityDate billDate;
 
     /**
      * {@link EntityTime} The billing time of the invoice
      */
     @Column(name = "billTime")
-    private EntityTime billEntityTime;
+    private EntityTime billTime;
 
     /**
      * {@link String} The id number of the employee who completed the transaction
@@ -117,8 +121,8 @@ public class Invoice implements Serializable, DBTable<Integer> {
      */
     public Invoice() {
         this.idNum = 0;
-        this.billEntityDate = null;
-        this.billEntityTime = null;
+        this.billDate = null;
+        this.billTime = null;
         this.employee = null;
         this.discount = 0.0d;
         this.total = 0.0d;
@@ -128,17 +132,17 @@ public class Invoice implements Serializable, DBTable<Integer> {
      * Primary Constructor - Used to store all data for the invoice
      *
      * @param idNum     The invoice number (randomly generated)
-     * @param billEntityDate  The billing date of the invoice
-     * @param billEntityTime  The billing time of the invoice
+     * @param billDate  The billing date of the invoice
+     * @param billTime  The billing time of the invoice
      * @param employee  The employee who completed the transaction
      * @param customer  The customer who placed the order
      * @param discount  The total discount for the order
      * @param total     The overall total for the order
      */
-    public Invoice(int idNum, EntityDate billEntityDate, EntityTime billEntityTime, Employee employee, Customer customer, double discount, double total) {
+    public Invoice(int idNum, EntityDate billDate, EntityTime billTime, Employee employee, Customer customer, double discount, double total) {
         this.idNum = idNum;
-        this.billEntityDate = billEntityDate;
-        this.billEntityTime = billEntityTime;
+        this.billDate = billDate;
+        this.billTime = billTime;
         this.employee = employee;
         this.customer = customer;
         this.discount = discount;
@@ -152,7 +156,7 @@ public class Invoice implements Serializable, DBTable<Integer> {
 
     @Override
     public boolean isValid() throws ParseException {
-        return !Utilities.isEmpty(idNum, billEntityDate, billEntityTime, total) && (Utilities.isEmpty(employee) || employee.isValid()) && (Utilities.isEmpty(customer) || customer.isValid()) && (total > 0) && (discount >= 0);
+        return !Utilities.isEmpty(idNum, billDate, billTime, total) && (Utilities.isEmpty(employee) || employee.isValid()) && (Utilities.isEmpty(customer) || customer.isValid()) && (total > 0) && (discount >= 0);
     }
 
     /**
@@ -161,6 +165,14 @@ public class Invoice implements Serializable, DBTable<Integer> {
      * @return The invoice object in string array format
      */
     public String[] toArray() {
-        return new String[]{String.valueOf(idNum), billEntityDate.toString(), employee.getName(), customer.getName(), String.valueOf(items.size()), String.format("$%.2f", total)};
+        return new String[]{String.valueOf(idNum), billDate.toString(), employee.getName(), customer.getName(), String.valueOf(items.size()), String.format("$%.2f", total)};
+    }
+
+    /**
+     * Returns the object as a Table Array
+     * @return table array
+     */
+    public Object[] toTableArray() {
+        return toArray();
     }
 }

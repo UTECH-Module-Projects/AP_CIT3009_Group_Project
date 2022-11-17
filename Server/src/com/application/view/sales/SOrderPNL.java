@@ -14,6 +14,7 @@ package com.application.view.sales;
 
 import com.application.generic.TableList;
 import com.application.models.tables.Invoice;
+import com.application.models.tables.InvoiceItem;
 import com.application.models.tables.Product;
 import com.application.view.SPNL;
 import com.application.view.ServerApp;
@@ -36,6 +37,8 @@ public class SOrderPNL implements ListSelectionListener {
     private final String title;
     private final SPNL sPNL;
     private final Client client;
+    private final Invoice invoice;
+    private final TableList<InvoiceItem, String> items;
     private JPanel pnl;
     private SOrderSearchPNL search;
     private SOrderFormPNL form;
@@ -44,17 +47,18 @@ public class SOrderPNL implements ListSelectionListener {
     private GUIEntityTable prodTBL;
     @Setter
     private int prodIndex = -1;
-    private final Invoice invoice;
+
 
     /**
      * Custmer View Panel Default Constructor
      * @param sPNL
      */
-    public SOrderPNL(String title, SPNL sPNL, Client client, Invoice invoice) {
+    public SOrderPNL(String title, SPNL sPNL, Client client, Invoice invoice, TableList<InvoiceItem, String> items) {
         this.title = title;
         this.sPNL = sPNL;
         this.client = client;
         this.invoice = invoice;
+        this.items = items;
         initializeComponents();
         addComponents();
         setProperties();
@@ -65,36 +69,27 @@ public class SOrderPNL implements ListSelectionListener {
      * Each section of this employee panel is broken down into separate panels
      */
     private void initializeComponents() {
-        pnl = new JPanel(new MigLayout("fill, flowy, ins 13 10 0 10", "[nogrid]10[nogrid, grow 0]", "[grow 0]10[grow 0]10[grow 0]"));
+        pnl = new JPanel(new MigLayout("flowy, ins 13 10 0 10", "[grow]10[nogrid, grow 0]", "[grow 0]10[grow 0]10[grow]"));
 
         prodTBL = new GUIEntityTable(ServerApp.products.to2DArray(), Product.headers, true);
         selCust = new SOrderCustomerPNL(title,this, client, invoice);
         search = new SOrderSearchPNL(title, this, client, invoice);
-        form = new SOrderFormPNL(title,this, client, invoice);
-        cart = new SOrderCartPNL(title,this, client, invoice);
+        form = new SOrderFormPNL(title,this, client, invoice, items);
+        cart = new SOrderCartPNL(title,this, client, invoice, items);
     }
 
     /**
      * each section being added to the panel with miglayout constraints
      */
     private void addComponents() {
-        pnl.add(selCust.getPnl(), "grow 0, height 100");
+        pnl.add(selCust.getPnl(), "aligny top, grow 0");
         pnl.add(search.getPnl(), "aligny top, growx, growy 0");
-        pnl.add(prodTBL.getSPNE(), "grow, wrap");
+        pnl.add(prodTBL.getSPNE(), "aligny top, grow, wrap");
         pnl.add(form.getPnl(), "grow");
         pnl.add(cart.getPnl(), "grow, wrap");
     }
 
-    /**
-     * Sets properties of components
-     */
     private void setProperties() {
-        prodTBL.setTextFieldRowFilter(search.getIdTXT(), Product.ID_NUM);
-        prodTBL.setTextFieldRowFilter(search.getNameTXT(), Product.NAME);
-        prodTBL.setTextFieldRowFilter(search.getShDescTXT(), Product.SH_DESC);
-        prodTBL.setTextFieldRowFilter(search.getLoDescTXT(), Product.LO_DESC);
-        prodTBL.setTextFieldRowFilter(search.getStockTXT(), Product.STOCK);
-        prodTBL.setTextFieldRowFilter(search.getPriceTXT(), Product.PRICE);
         prodTBL.addListSelectionListener(this);
     }
 
@@ -102,11 +97,10 @@ public class SOrderPNL implements ListSelectionListener {
      * Method clears text field
      */
     public void clear() {
-        selCust.clear();
         form.clear();
         search.clear();
-        prodTBL.clearSelection();
         cart.clear();
+        selCust.clear();
         prodIndex = -1;
     }
 
@@ -114,9 +108,9 @@ public class SOrderPNL implements ListSelectionListener {
      * Method fetches table from database and displays in jTable
      */
     public void refresh() {
-        clear();
-        ServerApp.products.refresh(client.getAll("Product"));
+        selCust.refresh();
         prodTBL.refresh(ServerApp.products.to2DArray());
+        clear();
     }
 
     /**
@@ -133,7 +127,12 @@ public class SOrderPNL implements ListSelectionListener {
                 if (newIndex != prodIndex) {
                     prodIndex = newIndex;
                     Product product = ServerApp.products.get(prodIndex);
-                    form.update(product);
+
+                    if (product.getStock() <= 0) {
+                        JOptionPane.showMessageDialog(sPNL.getPnl(), "No Stock Available for " + product.getName() + "!", title, JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        form.update(product);
+                    }
                 }
             } catch (IndexOutOfBoundsException ignored) {}
         }

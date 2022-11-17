@@ -108,4 +108,12 @@ public class Department implements Serializable, DBTable<String> {
     public String[] toArray() {
         return new String[]{idNum, name};
     }
+
+    /**
+     * Returns the object as a Table Array
+     * @return table array
+     */
+    public Object[] toTableArray() {
+        return toArray();
+    }
 }

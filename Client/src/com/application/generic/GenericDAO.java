@@ -22,9 +22,9 @@ import java.util.List;
 /**
  * <h1>Generic Data Access Object Class</h1>
  * <p>
- * This Class is designed to convert time between the database and the object
+ * This Class is designed to get the get all data within a column
+ * and return the table if there's a match
  * </p>
- *
  * @param <T>
  * @param <ID>
  *

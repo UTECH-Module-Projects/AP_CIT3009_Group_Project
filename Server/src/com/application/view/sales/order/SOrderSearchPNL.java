@@ -16,8 +16,10 @@ import com.application.generic.TableList;
 import com.application.models.misc.EntityDate;
 import com.application.models.tables.Employee;
 import com.application.models.tables.Invoice;
+import com.application.models.tables.Product;
 import com.application.view.ServerApp;
 import com.application.view.sales.SOrderPNL;
+import com.application.view.server.view.SEViewClientsPNL;
 import com.application.view.utilities.FileLocationSelector;
 import com.application.view.utilities.InvalidCharListener;
 import com.application.view.utilities.ReportGenerator;
@@ -27,6 +29,8 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -62,13 +66,14 @@ public class SOrderSearchPNL implements ActionListener {
         initializeComponents();
         addComponents();
         setProperties();
+        addTextSearchListeners();
     }
 
     /**
      * Initializes swing Components used in this search panel
      */
     private void initializeComponents() {
-        pnl = new JPanel(new MigLayout("fill, ins 10, gapx 10", "[grow 33][grow 33][grow 33]", "[][][][][]15[]"));
+        pnl = new JPanel(new MigLayout("fill, ins 10 10 0 10, gapx 10", "[grow 33][grow 33][grow 33]", "[][][][]10[]15[]"));
 
         idLBL = new JLabel("ID Number:");
         nameLBL = new JLabel("Product Name:");
@@ -139,6 +144,43 @@ public class SOrderSearchPNL implements ActionListener {
         priceTXT.addKeyListener(specialCharListener);
     }
 
+    private void addTextSearchListeners() {
+        DocumentListener dl = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                setRowFilters();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                setRowFilters();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                setRowFilters();
+            }
+        };
+        idTXT.getDocument().addDocumentListener(dl);
+        nameTXT.getDocument().addDocumentListener(dl);
+        shDescTXT.getDocument().addDocumentListener(dl);
+        loDescTXT.getDocument().addDocumentListener(dl);
+        stockTXT.getDocument().addDocumentListener(dl);
+        priceTXT.getDocument().addDocumentListener(dl);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setRowFilters() {
+        sOrderPNL.getProdTBL().setRowFilters(
+                sOrderPNL.getProdTBL().createTextFilter(idTXT, Product.ID_NUM),
+                sOrderPNL.getProdTBL().createTextFilter(nameTXT, Product.NAME),
+                sOrderPNL.getProdTBL().createTextFilter(shDescTXT, Product.SH_DESC),
+                sOrderPNL.getProdTBL().createTextFilter(loDescTXT, Product.LO_DESC),
+                sOrderPNL.getProdTBL().createTextFilter(stockTXT, Product.STOCK),
+                sOrderPNL.getProdTBL().createTextFilter(priceTXT, Product.PRICE)
+        );
+    }
+
     /**
      * Method clears text field
      */
@@ -154,10 +196,12 @@ public class SOrderSearchPNL implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource().equals(refresh)) {
-            sOrderPNL.refresh();
-            ServerApp.invoices.refresh(client.getAll("Invoice"));
+            ServerApp.refresh("Product");
+            JOptionPane.showMessageDialog(sOrderPNL.getPnl(), "Successfully Refreshed!", title, JOptionPane.INFORMATION_MESSAGE);
+            refresh.setSelected(false);
         } else if (e.getSource().equals(clear)) {
             clear();
+            clear.setSelected(false);
         }
     }
 }

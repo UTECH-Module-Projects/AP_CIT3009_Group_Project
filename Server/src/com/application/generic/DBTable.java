@@ -24,6 +24,7 @@ import java.text.ParseException;
  */
 public interface DBTable<ID> {
     String[] toArray();
+    Object[] toTableArray();
     boolean isValid() throws ParseException;
     ID getIdNum();
 }

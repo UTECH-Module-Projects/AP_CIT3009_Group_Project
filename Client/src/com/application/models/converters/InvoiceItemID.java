@@ -16,8 +16,7 @@ package com.application.models.converters;
 
 //Imported Libraries
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Objects;

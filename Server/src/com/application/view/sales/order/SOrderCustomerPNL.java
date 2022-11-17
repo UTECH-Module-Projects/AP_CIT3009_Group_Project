@@ -10,12 +10,11 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Objects;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 @Getter
-public class SOrderCustomerPNL implements ActionListener {
+public class SOrderCustomerPNL implements ItemListener {
 
     private final String title;
     private final SOrderPNL sOrderPNL;
@@ -40,38 +39,44 @@ public class SOrderCustomerPNL implements ActionListener {
         pnl = new JPanel(new MigLayout("ins 10, flowx", "[]", "[]"));
 
         custLBL = new JLabel("Customer:");
-        custNames = new JComboBox<>(ServerApp.customers.map(Customer::getName).toArray(new String[0]));
+        custNames = new JComboBox<>();
     }
 
     private void addComponents() {
         pnl.add(custLBL, "grow 0, split");
-        pnl.add(custNames, "grow 0, wrap");
+        pnl.add(custNames, "grow 0, width 200, wrap");
     }
 
     private void setProperties() {
         TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Select Customer");
         pnl.setBorder(titledBorder);
 
-        custNames.insertItemAt("", 0);
-        custNames.setSelectedIndex(0);
+        refresh();
 
-        custNames.addActionListener(this);
+        custNames.addItemListener(this);
     }
 
     public void clear() {
         custNames.setSelectedIndex(0);
     }
 
+    public void refresh() {
+        custNames.setModel(new JComboBox<>(ServerApp.customers.map(Customer::getName).toArray(new String[0])).getModel());
+        custNames.insertItemAt("", 0);
+        custNames.setSelectedIndex(0);
+    }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void itemStateChanged(ItemEvent e) {
         if (e.getSource().equals(custNames)) {
             if (custNames.getSelectedIndex() == 0) {
                 sOrderPNL.getForm().getPnl().setVisible(false);
+                sOrderPNL.getCart().getPnl().setVisible(false);
             } else {
                 invoice.setCustomer(ServerApp.customers.get(custNames.getSelectedIndex()-1));
-                if (sOrderPNL.getProdIndex() != -1)
-                    sOrderPNL.getForm().getPnl().setVisible(true);
+                sOrderPNL.getForm().getPnl().setVisible(true);
+                sOrderPNL.getCart().getPnl().setVisible(true);
+                sOrderPNL.getCart().calcTot();
             }
         }
     }

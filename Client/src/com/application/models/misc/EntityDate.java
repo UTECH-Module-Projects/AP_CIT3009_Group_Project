@@ -21,8 +21,11 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,7 +53,7 @@ public class EntityDate implements Serializable {
     public static final String sqlStr = "yyyy-MM-dd";
     public static final String sqlDel = "-";
 
-    public static final SimpleDateFormat sqlFormat = new SimpleDateFormat(sqlStr);
+    public static final SimpleDateFormat sqlFormat = new SimpleDateFormat(sqlStr, Locale.ENGLISH);
 
     private int year;
     private int month;
@@ -117,9 +120,22 @@ public class EntityDate implements Serializable {
         return new EntityDate(split(date));
     }
 
-    @SneakyThrows
     public static Date toUtilDate(EntityDate date) {
-        return sqlFormat.parse(date.toString());
+        return toUtilDate(date.toString());
+
+    }
+
+    public static Date toUtilDate(String date) {
+        boolean flag = true;
+        Date utilDate = null;
+        do {
+            try {
+                utilDate = sqlFormat.parse(date);
+                flag = false;
+            } catch (Exception ignored) {}
+        } while (flag);
+
+        return utilDate;
     }
 
     /**

@@ -93,6 +93,10 @@ public class TableList<T extends DBTable<ID>, ID> extends ArrayList<T> {
         return this.parallelStream().map(DBTable::toArray).toList().toArray(new String[0][0]);
     }
 
+    public Object[][] to2DTableArray() {
+        return this.parallelStream().map(DBTable::toTableArray).toList().toArray(Object[][]::new);
+    }
+
     /**
      *
      * @param idNum

@@ -48,6 +48,8 @@ public class Employee extends Person implements DBTable<String> {
      */
     public static final String[] headers = {"ID Number", "Full Name", "Date of Birth", "Address", "Phone Number", "Email", "Type", "Department"};
 
+    public static final int idLength = 8;
+
     /**
      * Stores the order of fields of employees in the table
      */
@@ -132,5 +134,13 @@ public class Employee extends Person implements DBTable<String> {
      */
     public String[] toArray() {
         return new String[]{idNum, name, Utilities.checkNull(dob), address, phoneNum, email, type, department.getName()};
+    }
+
+    /**
+     * Returns the object as a Table Array
+     * @return table array
+     */
+    public Object[] toTableArray() {
+        return new Object[]{idNum, name, Utilities.checkNull(dob), address, phoneNum, email, type, department.getName()};
     }
 }

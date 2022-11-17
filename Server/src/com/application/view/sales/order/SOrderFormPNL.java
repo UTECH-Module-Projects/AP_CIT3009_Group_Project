@@ -23,10 +23,9 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.logging.log4j.Level;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Getter
@@ -35,6 +34,8 @@ public class SOrderFormPNL implements ActionListener {
     private final String title;
     private final SOrderPNL sOrderPNL;
     private final Client client;
+    private final Invoice invoice;
+    private final TableList<InvoiceItem, String> items;
     private JPanel pnl;
     private JLabel idLBL, nameLBL, shDescLBL, loDescLBL, stockLBL, priceLBL, quantityLBL, totalLBL;
     private JTextField idTXT, nameTXT, shDescTXT, stockTXT, priceTXT, totalTXT;
@@ -42,24 +43,23 @@ public class SOrderFormPNL implements ActionListener {
     private JComboBox<String> quantity;
     public JButton add, cancel;
     private Product product;
-    private final Invoice invoice;
     private String invItemID;
 
-    private TableList<InvoiceItem, String> items;
 
     /**
      * Primary Constructor
+     *
      * @param title
      * @param sOrderPNL
      * @param client
      */
-    public SOrderFormPNL(String title, SOrderPNL sOrderPNL, Client client, Invoice invoice) {
+    public SOrderFormPNL(String title, SOrderPNL sOrderPNL, Client client, Invoice invoice, TableList<InvoiceItem, String> items) {
         this.title = title;
         this.sOrderPNL = sOrderPNL;
         this.client = client;
         this.invoice = invoice;
+        this.items = items;
         invItemID = (String) client.genID("InvoiceItem", InvoiceItem.idLength);
-        items = new TableList<>(InvoiceItem.class, InvoiceItem.headers);
         initializeComponents();
         addComponents();
         setProperties();
@@ -69,7 +69,7 @@ public class SOrderFormPNL implements ActionListener {
      * Initializes swing Components used in this form
      */
     private void initializeComponents() {
-        pnl = new JPanel(new MigLayout("fill, ins 10 10 0 10", "[]10[]10[]10[]", "[]5[]5[]5[]5[]5[]5[]5[]15[]"));
+        pnl = new JPanel(new MigLayout("fill, ins 10 10 0 10", "[grow 0]10[]10[]10[]", "[]5[]5[]5[]5[]5[]5[]5[]15[]"));
 
         idLBL = new JLabel("ID Number:");
         nameLBL = new JLabel("Product Name:");
@@ -86,7 +86,7 @@ public class SOrderFormPNL implements ActionListener {
         loDescTXTA = new JTextArea();
         stockTXT = new JTextField();
         priceTXT = new JTextField();
-        totalTXT = new JTextField();
+        totalTXT = new JTextField("$0.00");
 
         quantity = new JComboBox<>();
 
@@ -98,29 +98,29 @@ public class SOrderFormPNL implements ActionListener {
      * adding components to the panel with miglayout constraints
      */
     private void addComponents() {
-        pnl.add(idLBL, "grow");
-        pnl.add(idTXT, "grow, span 2, wrap");
+        pnl.add(idLBL);
+        pnl.add(idTXT, "growx, span 2, wrap");
 
-        pnl.add(nameLBL, "grow");
-        pnl.add(nameTXT, "grow, span 3, wrap");
+        pnl.add(nameLBL);
+        pnl.add(nameTXT, "growx, span 3, wrap");
 
-        pnl.add(shDescLBL, "grow");
-        pnl.add(shDescTXT, "grow, span 3, wrap");
+        pnl.add(shDescLBL);
+        pnl.add(shDescTXT, "growx, span 3, wrap");
 
-        pnl.add(loDescLBL, "grow");
+        pnl.add(loDescLBL);
         pnl.add(loDescTXTA, "grow, span 3, wrap");
 
-        pnl.add(stockLBL, "grow");
-        pnl.add(stockTXT, "grow, span 2, wrap");
+        pnl.add(stockLBL);
+        pnl.add(stockTXT, "growx, span 2, wrap");
 
-        pnl.add(priceLBL, "grow");
-        pnl.add(priceTXT, "grow, span 2, wrap");
+        pnl.add(priceLBL);
+        pnl.add(priceTXT, "growx, span 2, wrap");
 
-        pnl.add(quantityLBL, "grow");
-        pnl.add(quantity, "grow, wrap");
+        pnl.add(quantityLBL);
+        pnl.add(quantity, "growx, wrap");
 
-        pnl.add(totalLBL, "grow");
-        pnl.add(totalTXT, "grow, span 2, wrap");
+        pnl.add(totalLBL);
+        pnl.add(totalTXT, "growx, span 2, wrap");
 
         pnl.add(add, "span, split, width 100, center");
         pnl.add(cancel, "width 100, center, wrap");
@@ -141,8 +141,15 @@ public class SOrderFormPNL implements ActionListener {
         priceTXT.setEditable(false);
         totalTXT.setEditable(false);
 
-        add.setEnabled(false);
+        totalTXT.setFont(new Font(totalTXT.getFont().getFontName(), Font.BOLD, 15));
+        totalTXT.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY));
 
+        quantity.setEnabled(false);
+
+        add.setEnabled(false);
+        cancel.setEnabled(false);
+
+        quantity.addActionListener(this);
         cancel.addActionListener(this);
         add.addActionListener(this);
     }
@@ -157,72 +164,95 @@ public class SOrderFormPNL implements ActionListener {
         loDescTXTA.setText("");
         stockTXT.setText("");
         priceTXT.setText("");
-        totalTXT.setText("");
+        totalTXT.setText("$0.00");
 
-        quantity.setSelectedIndex(0);
+        quantity.setSelectedIndex(-1);
 
         add.setEnabled(false);
+        cancel.setEnabled(false);
 
         sOrderPNL.getProdTBL().clearSelection();
         sOrderPNL.setProdIndex(-1);
-        pnl.setVisible(false);
     }
 
     /**
      * Method updates specific product info in table based on form input
+     *
      * @param product
      */
     public void update(Product product) {
-        if (sOrderPNL.getSelCust().getCustNames().getSelectedIndex() != 0 && product.getStock() > 0) {
-            idTXT.setText(product.getIdNum());
-            nameTXT.setText(product.getName());
-            shDescTXT.setText(product.getShDesc());
-            loDescTXTA.setText(product.getLoDesc());
-            stockTXT.setText(String.valueOf(product.getStock()));
-            priceTXT.setText(String.format("$%.2f", product.getPrice()));
-            totalTXT.setText(String.valueOf(product.getPrice() * (quantity.getSelectedIndex()+1)));
+        String price = String.format("$%.2f", product.getPrice());
+        idTXT.setText(product.getIdNum());
+        nameTXT.setText(product.getName());
+        shDescTXT.setText(product.getShDesc());
+        loDescTXTA.setText(product.getLoDesc());
+        stockTXT.setText(String.valueOf(product.getStock()));
+        priceTXT.setText(price);
+        totalTXT.setText(price);
 
-            this.product = product;
+        quantity.setEnabled(true);
 
-            quantity.removeAllItems();
-            quantity.setModel(new DefaultComboBoxModel<>(IntStream.range(1, product.getStock()+1).mapToObj(String::valueOf).toArray(String[]::new)));
-            quantity.setSelectedIndex(0);
-            pnl.setVisible(true);
-            add.setEnabled(true);
-        }
+        this.product = product;
+
+        quantity.removeAllItems();
+        quantity.setModel(new DefaultComboBoxModel<>(IntStream.range(1, product.getStock() + 1).mapToObj(String::valueOf).toArray(String[]::new)));
+        quantity.setSelectedIndex(0);
+
+        add.setEnabled(true);
+        cancel.setEnabled(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        int prodIndex = sOrderPNL.getProdIndex();
         if (e.getSource().equals(cancel)) {
             clear();
-        } else if (e.getSource().equals(add) && prodIndex != -1) {
-            InvoiceItem item;
+            cancel.setSelected(false);
+        } else if (e.getSource().equals(quantity) || e.getSource().equals(add)) {
+            int prodIndex = sOrderPNL.getProdIndex();
+            if (prodIndex != -1) {
+                int qValue = quantity.getSelectedIndex() + 1;
+                Product product = ServerApp.products.get(prodIndex);
 
-            if (JOptionPane.showConfirmDialog(sOrderPNL.getSPNL().getPnl(), "Add to cart?", title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                if (e.getSource().equals(quantity)) {
+                    totalTXT.setText(String.format("$%.2f", product.getPrice() * qValue));
+                } else if (e.getSource().equals(add)) {
+                    if (JOptionPane.showConfirmDialog(sOrderPNL.getSPNL().getPnl(), "Add to cart?", title, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                        boolean flag = true;
+                        for (InvoiceItem item : items) {
+                            if (item.getProduct().getIdNum().equals(product.getIdNum())) {
+                                flag = false;
+                                item.setQuantity(item.getQuantity() + qValue);
+                                break;
+                            }
+                        }
 
-                item = new InvoiceItem(
-                        invItemID,
-                        invoice,
-                        product,
-                        Integer.parseInt(quantity.getItemAt(quantity.getSelectedIndex() == -1 ? 0 : quantity.getSelectedIndex())),
-                        product.getPrice()
-                );
-                if (!item.isValid()) {
-                    client.log(Level.WARN, "Could not add item! {invalid details}");
-                    JOptionPane.showMessageDialog(sOrderPNL.getSPNL().getPnl(), "Invalid Item Details! Try again...", title, JOptionPane.ERROR_MESSAGE);
-
-                    return;
+                        if (flag) {
+                            InvoiceItem item = new InvoiceItem(
+                                    invItemID,
+                                    invoice,
+                                    product,
+                                    product.getName(),
+                                    qValue,
+                                    product.getPrice()
+                            );
+                            if (!item.isValid()) {
+                                client.log(Level.WARN, "Could not add item! {invalid details}");
+                                JOptionPane.showMessageDialog(sOrderPNL.getSPNL().getPnl(), "Invalid Item Details! Try again...", title, JOptionPane.ERROR_MESSAGE);
+                                invItemID = (String) client.genID("InvoiceItem", InvoiceItem.idLength);
+                                return;
+                            } else {
+                                items.add(item);
+                                sOrderPNL.getCart().getProdIndexes().add(prodIndex);
+                            }
+                        }
+                        sOrderPNL.getCart().update();
+                        clear();
+                        invItemID = (String) client.genID("InvoiceItem", InvoiceItem.idLength);
+                    }
+                    add.setSelected(false);
                 }
-                invItemID = (String) client.genID("InvoiceItem", InvoiceItem.idLength);
-                items.add(item);
-                sOrderPNL.getCart().getPnl().setVisible(true);
-                sOrderPNL.getCart().getCheckout().setEnabled(true);
-                sOrderPNL.getCart().getItemTBL().addRow(item.toArray());
-                sOrderPNL.getCart().update();
-                clear();
             }
         }
+
     }
 }
