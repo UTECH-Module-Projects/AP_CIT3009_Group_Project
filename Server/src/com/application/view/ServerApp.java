@@ -40,13 +40,14 @@ import java.awt.event.*;
  * </p>
  * <p>
  *     Acronyms:-
- *     c - Customer,
- *     e - Employee,
- *     p - Product,
- *     i - Invoice,
- *     r - Reports,
- *     s - Server,
- *     h - Help,
+ *     c   - Customer,
+ *     e   - Employee,
+ *     p   - Product,
+ *     i   - Invoice,
+ *     inv - Inventory
+ *     r   - Reports,
+ *     s   - Server,
+ *     h   - Help,
  *     BTN - Button,
  *     CMB - ComboBox,
  *     IMG - Image,

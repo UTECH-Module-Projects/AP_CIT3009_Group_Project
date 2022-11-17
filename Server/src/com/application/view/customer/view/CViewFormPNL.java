@@ -1,3 +1,15 @@
+/*
+ * Advance Programming Group Project
+ * Date of Submission: 11/11/2022
+ * Lab Supervisor: Christopher Panther
+ *
+ * Group Members:-
+ * ~ Gabrielle Johnson      2005322
+ * ~ Jazmin Hayles          2006754
+ * ~ Rushawn White          2002469
+ * ~ Barrignton Patternson  2008034
+ *
+ */
 package com.application.view.customer.view;
 
 import com.application.generic.TableList;
@@ -48,6 +60,9 @@ public class CViewFormPNL implements ActionListener {
         setProperties();
     }
 
+    /**
+     * Initializes swing Components used in this form
+     */
     private void initializeComponents() {
         pnl = new JPanel(new MigLayout("fill, ins 10 10 0 10", "[grow 0]10[]10[]10[]", "[]5[]5[]5[]5[]5[]5[]5[]5[]15[]"));
 
@@ -76,6 +91,9 @@ public class CViewFormPNL implements ActionListener {
         clear = new JButton("Clear", new ImageIcon(ServerApp.clearIMG));
     }
 
+    /**
+     * adding components to the panel with miglayout constraints
+     */
     private void addComponents() {
         pnl.add(idLBL);
         pnl.add(idTXT, "growx, span 2, wrap");
@@ -102,6 +120,9 @@ public class CViewFormPNL implements ActionListener {
         pnl.add(clear, "center, wrap, width 100, wrap");
     }
 
+    /**
+     * Sets properties of components on the form
+     */
     private void setProperties() {
         pnl.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Customer Form"));
 

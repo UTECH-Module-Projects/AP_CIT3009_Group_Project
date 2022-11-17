@@ -12,6 +12,10 @@
  */
 package com.application.generic;
 
+/**
+ * enum class with sql conditions
+ */
+
 public enum SQLCond {
     EQ, NEQ, GT, GE, LT, LE, LIKE
 }

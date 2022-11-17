@@ -1,3 +1,15 @@
+/*
+ * Advance Programming Group Project
+ * Date of Submission: 11/11/2022
+ * Lab Supervisor: Christopher Panther
+ *
+ * Group Members:-
+ * ~ Gabrielle Johnson      2005322
+ * ~ Jazmin Hayles          2006754
+ * ~ Rushawn White          2002469
+ * ~ Barrignton Patternson  2008034
+ *
+ */
 package com.application.view.customer.view;
 
 import com.application.generic.TableList;
@@ -15,9 +27,19 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
-public class CViewSearchPNL {
+public class CViewSearchPNL implements ActionListener {
+    private static final InvalidCharListener charListener = new InvalidCharListener(new char[]{'\\', '(', ')', '*', '.', '?', '|', '+', '$', '^'});
+
+    private final String title;
     private final CViewPNL cViewPNL;
     private final Client client;
     private JPanel pnl;
@@ -41,6 +63,9 @@ public class CViewSearchPNL {
         addTextSearchListeners();
     }
 
+    /**
+     * Initializes swing Components used in this search panel
+     */
     private void initializeComponents() {
         pnl = new JPanel(new MigLayout("fill, ins 10 10 0 10, gapx 10", "[grow 10][grow 50][grow 40]", "[][][][]15[]"));
 
@@ -61,6 +86,9 @@ public class CViewSearchPNL {
         clear = new JButton("Clear", new ImageIcon(ServerApp.clearIMG));
     }
 
+    /**
+     * adding components to the panel with miglayout constraints
+     */
     private void addComponents() {
         pnl.add(idLBL, "grow");
         pnl.add(nameLBL, "grow");
@@ -81,9 +109,23 @@ public class CViewSearchPNL {
         pnl.add(clear, "width 100, left, wrap");
     }
 
+    /**
+     * Sets properties of components
+     */
     private void setProperties() {
         TitledBorder titledBorder = BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Search");
         pnl.setBorder(titledBorder);
+
+        idTXT.addKeyListener(charListener);
+        nameTXT.addKeyListener(charListener);
+        addressTXT.addKeyListener(charListener);
+        phoneNumTXT.addKeyListener(charListener);
+        emailTXT.addKeyListener(charListener);
+
+        print.setEnabled(false);
+        print.addActionListener(this);
+        refresh.addActionListener(this);
+        clear.addActionListener(this);
     }
 
     private void addTextSearchListeners() {

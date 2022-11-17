@@ -19,6 +19,21 @@ package com.application.generic;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * <h1>Generic Data Access Object Class</h1>
+ * <p>
+ * This Class is designed to get the get all data within a column
+ * and return the table if there's a match
+ * </p>
+ * @param <T>
+ * @param <ID>
+ *
+ * @author Gabrielle Johnson
+ * @author Jazmin Hayles
+ * @author Rushawn White
+ * @author Barrignton Patterson
+ * @version 1.0
+ */
 public interface GenericDAO<T, ID extends Serializable> {
     void create(T entity);
     void update(T entity);
